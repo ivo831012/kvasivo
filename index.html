@@ -591,6 +591,16 @@ html.noanim .wz-step{animation:none!important}
 .ed-foot{position:sticky;bottom:0;padding:12px 0 4px;background:linear-gradient(transparent,var(--surface) 30%);z-index:6}
 .ed-foot button{width:100%}
 .rows{display:grid;grid-template-columns:1fr;gap:12px}
+
+/* v3.5 — зелен съветник, ръчно въвеждане */
+#tab-new,#editModal{--primary:#4F7A3A;--primary-2:#7BA05B;--chip:#E2EBD3;--line:#D3DEC3;--on-primary:#fff}
+html[data-theme=wheat] #tab-new,html[data-theme=wheat] #editModal{--primary:#4F7A3A;--primary-2:#7BA05B}
+#newBreadForm .ns-b,#editBreadForm .ns-b{display:none}
+#newBreadForm .nstep,#editBreadForm .nstep,#newBreadForm .gstep{display:block}
+#newBreadForm .gstep input,#editBreadForm .gstep input{width:92px}
+#newBreadForm .flour-row{grid-template-columns:minmax(0,1fr) 96px 40px}
+.wz-q{font:700 17px var(--fd);margin:2px 0 -2px}
+#tab-new .wz-pill.cur .i{box-shadow:0 8px 16px -8px #4F7A3A}
 </style>
 </head>
 <body>
@@ -1086,7 +1096,7 @@ function showTab(name) {
   if (name === 'diary') renderHistory();
   window.scrollTo(0, 0);
 }
-const APP_VERSION = '3.5.0';
+const APP_VERSION = '3.6.0';
 const userName = () => (localStorage.getItem('hlebIvo_userName') || '').trim();
 function renderGreeting() {
   const h = new Date().getHours(), g = h < 5 ? 'Лека нощ' : h < 11 ? 'Добро утро' : h < 18 ? 'Добър ден' : 'Добър вечер';
@@ -1202,8 +1212,8 @@ function npToggle(k) {
   ['clone', 'plan'].forEach(x => { const el = $('np_' + x), on = x === k && el.hidden; el.hidden = !on; $('npb_' + x).classList.toggle('on', on); });
 }
 /* ============ Съветник „Нов хляб“ и умни контроли ============ */
-const WZ = {i: 0, drive: true, busy: false, shown: false};
-const WZ_STEPS = [['wheat', 'Рецепта'], ['hourglass', 'Ферментация'], ['snowflake', 'Ретардация'], ['flame', 'Печене']];
+const WZ = {i: 0, drive: false, busy: false, shown: false};
+const WZ_STEPS = [['wheat', 'Рецепта'], ['clock', 'Време'], ['flame', 'Печене']];
 const FLOURS = ['Бяло', 'Типово', 'Пълнозърнесто', 'Ръжено', 'Спелта'];
 const SLD = [['h', 'Хидратация', 55, 100, 1, 75], ['s', 'Квас', 5, 40, 1, 20], ['t', 'Сол', 1, 3, .1, 2]];
 const dtOf = pf => { const d = $(pf + 'Date').value, t = $(pf + 'Time').value; return d && t ? ts(d + 'T' + t) : 0; };
@@ -1256,6 +1266,7 @@ function wzPaint(r) {
   $('wz_' + kk + '_v').textContent = String(shown).replace('.', ',') + '%';
 }
 function wzLabels() {
+  if (!$('wz_h_g')) return;
   const tot = readFlour('new_flourRows').total, w = waterGrams('new'), st = $('new_starter').value, sl = $('new_salt').value, pr = tot > 0;
   $('wz_h_g').textContent = pr && w !== '' ? w + ' г вода' : '—'; $('wz_s_g').textContent = pr && st !== '' ? st + ' г квас' : '—'; $('wz_t_g').textContent = pr && sl !== '' ? sl + ' г сол' : '—';
 }
@@ -1266,13 +1277,13 @@ function wzSyncSliders() {
   wzLabels();
 }
 function wzAfterPreview() {
-  if (!$('wz_sliders') || WZ.busy) return;
-  if (WZ.drive) wzApplyAll(); else wzSyncSliders();
+  if (WZ.busy) return;
+  if ($('wz_sliders')) { if (WZ.drive) wzApplyAll(); else wzSyncSliders(); }
   wzRefresh();
 }
 function wzReset() {
-  WZ.drive = true; WZ.shown = false; $('wz_noFridge').checked = false; wzToggleFridge();
-  SLD.forEach(([k, , , , , df]) => { $('wz_' + k).value = df; wzPaint($('wz_' + k)); }); wzLabels(); wzGo(0, -1);
+  WZ.drive = false; WZ.shown = false; $('wz_noFridge').checked = false; wzToggleFridge();
+  wzGo(0, -1);
 }
 function wzToggleFridge() {
   const off = $('wz_noFridge').checked; $('wz_fridgeBox').hidden = off;
@@ -1314,7 +1325,7 @@ function wzGo(i, dir) {
 function wzNext() {
   if (WZ.i === 0 && !readFlour('new_flourRows').str) { toast('Добави поне едно брашно', {icon: 'alert', warn: true}); return; }
   if (WZ.i >= 1 && !dtOf('new_start')) { wzGo(1); toast('Избери кога замесваш', {icon: 'alert', warn: true}); return; }
-  if (WZ.i < 3) wzGo(WZ.i + 1); else { if (!readFlour('new_flourRows').str) { wzGo(0); toast('Добави поне едно брашно', {icon: 'alert', warn: true}); return; } $('newBreadForm').requestSubmit(); }
+  if (WZ.i < 2) wzGo(WZ.i + 1); else { if (!readFlour('new_flourRows').str) { wzGo(0); toast('Добави поне едно брашно', {icon: 'alert', warn: true}); return; } $('newBreadForm').requestSubmit(); }
 }
 function buildWizard() {
   const form = $('newBreadForm'), grid = form.querySelector('.form-grid'), k = [...grid.children];
@@ -1323,42 +1334,28 @@ function buildWizard() {
   // стъпка 1 — рецепта
   const flc = document.createElement('div'); flc.className = 'wz-flc';
   qchips(flc, FLOURS.map(n => [n]), it => wzAddFlour(it[0]), 'Добави вид');
-  qchips(flc, [300, 400, 500, 600, 800, 1000].map(n => [n + ' г', n]), it => wzSetTotal(it[1]), 'Общо брашно');
   k[1].appendChild(flc);
-  const sl = document.createElement('div'); sl.id = 'wz_sliders'; sl.className = 'wz-sl-box';
-  sl.innerHTML = '<div class="wz-lab">Пропорции</div>' + SLD.map(([kk, l, mn, mx, st, df]) => `<div class="wz-sl"><div class="wz-sl-h"><span>${l}</span><b id="wz_${kk}_v">${df}%</b><small id="wz_${kk}_g">—</small></div><input type="range" id="wz_${kk}" data-k="${kk}" min="${mn}" max="${mx}" step="${st}" value="${df}" aria-label="${l}"></div>`).join('');
-  sl.addEventListener('input', ev => { const r = ev.target.closest('input[type=range]'); if (!r) return; WZ.drive = true; wzPaint(r); if (!(readFlour('new_flourRows').total > 0)) { toast('Първо добави брашно', {icon: 'info'}); } wzApplyAll(); });
-  const adv = document.createElement('details'); adv.className = 'wz-adv'; adv.innerHTML = '<summary>Точни грамове и закваска (ръчно)</summary>'; grid.appendChild(adv); adv.append(k[2], k[3]);
-  ['new_water', 'new_starter', 'new_salt'].forEach(id => $(id).addEventListener('input', () => { if (!WZ.busy) WZ.drive = false; }));
-  $('new_waterSeg').addEventListener('click', () => { WZ.drive = false; });
-  const s1 = mk([k[0], k[1], sl, adv, k[4]]);
+  const s1 = mk([k[0], k[1], k[2], k[3], k[4]]);
   // стъпка 2 — насипна ферментация
-  const c2 = k[6]; c2.classList.add('rows');
+  const c2 = k[6];
   enhanceNum('new_autolyse', 15, 0, 240); enhanceNum('new_folds', 1, 0, 12); enhanceNum('new_foldInt', 5, 10, 120);
-  const grp = id => $(id).closest('.form-group');
-  qchips(grp('new_autolyse'), [0, 30, 45, 60, 90].map(n => [n ? n + ' мин' : 'Без', n]), it => { $('new_autolyse').value = it[1] || ''; fire($('new_autolyse')); });
-  qchips(grp('new_folds'), [0, 2, 3, 4, 5, 6].map(n => [n ? String(n) : 'Без', n]), it => { $('new_folds').value = it[1] || ''; fire($('new_folds')); });
-  qchips(grp('new_foldInt'), [20, 30, 45, 60].map(n => [n + ' мин', n]), it => { $('new_foldInt').value = it[1]; fire($('new_foldInt')); });
   const tm = (h, m2, plusDay) => { const d = new Date(); d.setHours(h, m2, 0, 0); if (plusDay) d.setDate(d.getDate() + 1); else if (d.getTime() < Date.now()) d.setDate(d.getDate() + 1); return d.getTime(); };
-  qchips(k[5], [['Сега', () => Date.now()], ['След 1 ч', () => Date.now() + 3600000], ['Довечера 21:00', () => tm(21, 0)], ['Утре 07:00', () => tm(7, 0, 1)]], it => { setDT('new_start', it[1]()); wzRefresh(); });
-  const s2 = mk([k[5], c2, k[7]]);
-  // стъпка 3 — ретардация
+  qchips(k[5], [['Сега', () => Date.now()]], it => { setDT('new_start', it[1]()); wzRefresh(); });
+    // стъпка 3 — ретардация
   const tg = document.createElement('label'); tg.className = 'wz-tg'; tg.innerHTML = '<input type="checkbox" id="wz_noFridge"><span>Без ретардация — печем веднага след насипната</span>';
   tg.querySelector('input').addEventListener('change', wzToggleFridge);
   const tl = document.createElement('div'); tl.id = 'wz_tl'; tl.className = 'wz-tl';
   const fbox = document.createElement('div'); fbox.id = 'wz_fridgeBox'; grid.appendChild(fbox); fbox.append(k[8], k[9]);
-  qchips(k[8], [3, 4, 5, 6].map(h => [h + ' ч', h]), it => { const a = dtOf('new_start'); if (!a) { toast('Първо избери кога замесваш', {icon: 'alert', warn: true}); return; } setDT('new_fridge', a + it[1] * 3600000); wzRefresh(); }, 'След колко от замеса');
-  qchips(k[9], [8, 12, 16, 24].map(h => [h + ' ч', h]), it => { const a = dtOf('new_fridge'); if (!a) { toast('Първо задай началото на ретардацията', {icon: 'alert', warn: true}); return; } setDT('new_bake', a + it[1] * 3600000); wzRefresh(); }, 'Колко ретардация');
   ['new_fridgeDate', 'new_fridgeTime', 'new_bakeDate', 'new_bakeTime', 'new_startDate', 'new_startTime'].forEach(id => $(id).addEventListener('input', wzRefresh));
-  const s3 = mk([tl, tg, fbox]);
-  // стъпка 4 — печене
+  const s2 = mk([k[5], c2, k[7], tg, fbox, tl]);
+  // стъпка 3 — печене
   const mc = document.createElement('div'); mc.id = 'wz_methods'; mc.className = 'wz-methods';
   const mi = {dutch: 'lid', steam: 'droplet', free: 'flame', pan: 'bread', custom: 'edit'};
   mc.innerHTML = '<div class="wz-lab">Как печеш</div>' + Object.entries(BAKE_PRESETS).map(([key, v]) => `<button type="button" class="wz-mc" data-k="${key}">${ic(mi[key] || 'bread')}<b>${esc(v.label)}</b><small>${v.phases ? esc(v.phases.map(x => x.min + ' мин ' + x.name.toLowerCase()).join(' + ')) : 'сам задаваш'}</small></button>`).join('');
   mc.addEventListener('click', ev => { const b = ev.target.closest('.wz-mc'); if (!b) return; $('new_method').value = b.dataset.k; wzRefresh(); });
   k[10].hidden = true; k[11].hidden = true;
   const rvw = document.createElement('div'); rvw.id = 'wz_review'; rvw.className = 'wz-review';
-  const s4 = mk([mc, k[10], rvw, k[11]]);
+  const s3 = mk([mc, k[10], rvw, k[11]]);
   // лента със стъпки и навигация
   const bar = document.createElement('div'); bar.id = 'wz_bar'; bar.className = 'wz-bar';
   bar.innerHTML = '<i class="wz-line"><i id="wz_fill"></i></i>' + WZ_STEPS.map(([ico, l], i) => `<button type="button" class="wz-pill" data-i="${i}">${ic(ico)}<span>${l}</span></button>`).join('');
@@ -1366,7 +1363,7 @@ function buildWizard() {
   form.insertBefore(bar, grid);
   const nav = document.createElement('div'); nav.className = 'wz-nav'; nav.innerHTML = `<button type="button" class="btn-soft" id="wz_back">${ic('arrow')}Назад</button><button type="button" class="btn-primary" id="wz_next"></button>`;
   form.appendChild(nav); $('wz_back').onclick = () => wzGo(WZ.i - 1); $('wz_next').onclick = wzNext;
-  WZ.shown = 'init'; wzGo(0, 1); WZ.shown = false; SLD.forEach(([kk]) => wzPaint($('wz_' + kk))); wzLabels();
+  WZ.shown = 'init'; wzGo(0, 1); WZ.shown = false;
 }
 /* ---------- Редакция: раздели вместо дълъг скрол ---------- */
 function edTab(i) {
