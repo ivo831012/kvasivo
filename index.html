@@ -668,6 +668,7 @@ html.wizing main,html.wizing .app,html.wizing #app{padding-bottom:16px!important
 .wz-step .two,.wz-step .three{align-items:start}
 .wz-step>.three .label-row label{margin:0!important;height:auto!important;min-height:0!important}
 .wz-step>.three .label-row{margin:0 0 8px!important}
+.wz-nav .btn-primary,.wz-nav .btn-soft{margin:0!important}
 </style>
 </head>
 <body>
@@ -1164,7 +1165,7 @@ function showTab(name) {
   if (name === 'diary') renderHistory();
   window.scrollTo(0, 0);
 }
-const APP_VERSION = '3.7.1';
+const APP_VERSION = '3.7.2';
 const userName = () => (localStorage.getItem('hlebIvo_userName') || '').trim();
 function renderGreeting() {
   const h = new Date().getHours(), g = h < 5 ? 'Лека нощ' : h < 11 ? 'Добро утро' : h < 18 ? 'Добър ден' : 'Добър вечер';
@@ -1415,7 +1416,6 @@ function buildWizard() {
   const c2 = k[6];
   enhanceNum('new_autolyse', 15, 0, 240); enhanceNum('new_folds', 1, 0, 12); enhanceNum('new_foldInt', 5, 10, 120);
   const tm = (h, m2, plusDay) => { const d = new Date(); d.setHours(h, m2, 0, 0); if (plusDay) d.setDate(d.getDate() + 1); else if (d.getTime() < Date.now()) d.setDate(d.getDate() + 1); return d.getTime(); };
-  qchips(k[5], [['Сега', () => Date.now()]], it => { setDT('new_start', it[1]()); wzRefresh(); });
     // стъпка 3 — ретардация
   const tg = document.createElement('label'); tg.className = 'wz-tg'; tg.innerHTML = '<input type="checkbox" id="wz_noFridge"><span>Без ретардация</span>';
   tg.querySelector('input').addEventListener('change', wzToggleFridge);
