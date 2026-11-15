@@ -619,6 +619,35 @@ html[data-theme=wheat] #tab-new,html[data-theme=wheat] #editModal{--primary:#4F7
 .wz-pill.done .i{background:var(--primary);color:#fff}
 #newBreadForm #new_waterSeg{display:none}
 #newBreadForm .wz-step .three input{width:100%;box-sizing:border-box;min-width:0}
+
+/* v3.7 — точно като вариант Е */
+.gstep{position:relative}
+.gstep[data-u]::after,.wz-u::after{content:attr(data-u);position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);font:700 13px var(--fb);pointer-events:none}
+.gstep[data-u] input{padding-right:26px!important;text-align:left!important}
+.wz-pc{font:700 11px var(--fb);color:var(--primary);margin-top:4px;min-height:14px}
+#newBreadForm #new_waterHint{display:none}
+#wz_fridgeBox{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 14px;gap:10px}
+#wz_fridgeBox>.form-group{background:none!important;border:none!important;padding:0!important}
+#wz_fridgeBox>.form-group label{font-weight:600;letter-spacing:0;text-transform:none;font-size:12px}
+.wz-fh{display:flex;align-items:center;gap:8px;font:700 11px var(--fb);color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.wz-fh .i{width:16px;height:16px;color:#3E8FB5}
+.wz-tg{background:none;border:none;padding:2px 2px;font:600 13px var(--fb);color:var(--muted)}
+.wz-tg input{width:18px;height:18px}
+.wz-tl{background:var(--chip);border:none;font:500 12px/1.5 var(--fb);display:block}
+.wz-tl b{color:var(--primary)}
+.wz-mc{align-items:flex-start}
+.wz-mc.on{background:var(--primary);border-color:var(--primary);color:#fff;transform:none}
+.wz-mc.on .i,.wz-mc.on small{color:#fff;opacity:.9}
+.wz-phc{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 14px;display:grid;gap:8px}
+.wz-ph{display:grid;grid-template-columns:minmax(0,1fr) 78px 70px 34px;gap:6px;align-items:center}
+.wz-u{position:relative;display:block}.wz-u input{padding-right:30px}
+.wz-ph input{font:700 14px var(--fb);padding:9px 10px;width:100%;box-sizing:border-box}
+.wz-ph .mini-x{height:38px}
+.wz-tg{text-transform:none!important;letter-spacing:0!important}
+.wz-mc.on b{color:#fff}.wz-mc{transition:none}
+.wz-ph input[type=number]::-webkit-inner-spin-button,.wz-ph input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.wz-ph input[type=number]{-moz-appearance:textfield}
+.wz-step input[type=date],.wz-step input[type=time]{font-size:14px;padding-left:10px;padding-right:8px;min-width:0}
 </style>
 </head>
 <body>
@@ -1114,7 +1143,7 @@ function showTab(name) {
   if (name === 'diary') renderHistory();
   window.scrollTo(0, 0);
 }
-const APP_VERSION = '3.6.1';
+const APP_VERSION = '3.7.0';
 const userName = () => (localStorage.getItem('hlebIvo_userName') || '').trim();
 function renderGreeting() {
   const h = new Date().getHours(), g = h < 5 ? 'Лека нощ' : h < 11 ? 'Добро утро' : h < 18 ? 'Добър ден' : 'Добър вечер';
@@ -1147,7 +1176,7 @@ const pct = v => v == null || isNaN(v) ? '-' : Math.round(v * 10) / 10 + '%';
 
 function addFlourRow(containerId, name, grams) {
   const c = $(containerId), row = document.createElement('div'); row.className = 'flour-row';
-  row.innerHTML = `<input type="text" class="fl-name" placeholder="вид (бяло, типово…)" value="${esc(name || '')}"><div class="gstep"><button type="button" class="ns-b" data-d="-50" aria-label="Минус 50 грама">−</button><input type="number" class="fl-g calc" inputmode="decimal" step="any" placeholder="гр" value="${esc(grams == null ? '' : grams)}"><button type="button" class="ns-b" data-d="50" aria-label="Плюс 50 грама">+</button></div><button type="button" class="mini-x" aria-label="Махни">${ic('x')}</button>`;
+  row.innerHTML = `<input type="text" class="fl-name" placeholder="вид (бяло, типово…)" value="${esc(name || '')}"><div class="gstep" data-u="г"><button type="button" class="ns-b" data-d="-50" aria-label="Минус 50 грама">−</button><input type="number" class="fl-g calc" inputmode="decimal" step="any" placeholder="гр" value="${esc(grams == null ? '' : grams)}"><button type="button" class="ns-b" data-d="50" aria-label="Плюс 50 грама">+</button></div><button type="button" class="mini-x" aria-label="Махни">${ic('x')}</button>`;
   row.querySelector('.mini-x').onclick = () => { if (c.children.length > 1) { row.remove(); updatePreview(); } else { row.querySelectorAll('input').forEach(i => i.value = ''); updatePreview(); } };
   row.querySelectorAll('input').forEach(i => i.addEventListener('input', updatePreview));
   row.querySelectorAll('.ns-b').forEach(b => b.onclick = () => { const i = row.querySelector('.fl-g'); i.value = Math.max(0, (parseFloat(i.value) || 0) + (+b.dataset.d)); updatePreview(); });
@@ -1230,7 +1259,7 @@ function npToggle(k) {
   ['clone', 'plan'].forEach(x => { const el = $('np_' + x), on = x === k && el.hidden; el.hidden = !on; $('npb_' + x).classList.toggle('on', on); });
 }
 /* ============ Съветник „Нов хляб“ и умни контроли ============ */
-const WZ = {i: 0, drive: false, busy: false, shown: false};
+const WZ = {ph: [], i: 0, drive: false, busy: false, shown: false};
 const WZ_STEPS = [['wheat', 'Рецепта'], ['clock', 'Време'], ['flame', 'Печене']];
 const FLOURS = ['Бяло', 'Типово', 'Пълнозърнесто', 'Ръжено', 'Спелта'];
 const SLD = [['h', 'Хидратация', 55, 100, 1, 75], ['s', 'Квас', 5, 40, 1, 20], ['t', 'Сол', 1, 3, .1, 2]];
@@ -1300,7 +1329,7 @@ function wzAfterPreview() {
   wzRefresh();
 }
 function wzReset() {
-  WZ.drive = false; WZ.shown = false; $('wz_noFridge').checked = false; wzToggleFridge();
+  $('new_method').value = Object.keys(BAKE_PRESETS)[0]; wzPhases(true); WZ.drive = false; WZ.shown = false; $('wz_noFridge').checked = false; wzToggleFridge();
   wzGo(0, -1);
 }
 function wzToggleFridge() {
@@ -1311,23 +1340,30 @@ function wzToggleFridge() {
 function wzRefresh() {
   if (!$('wz_tl')) return;
   const a = isoOf('new_start'), b = isoOf('new_fridge'), c = isoOf('new_bake'), parts = [];
-  const bulk = hoursBetween(a, b), ret = hoursBetween(b, c);
-  if (a) parts.push(`<span><i data-x="1">${ic('play')}</i>Замес <b>${esc(fmtDT(ts(a)))}</b></span>`);
-  if (bulk) parts.push(`<span>${ic('wheat')}Насипна <b>${fmtH(bulk)}</b></span>`);
-  if (ret) parts.push(`<span>${ic('snowflake')}Ретардация <b>${fmtH(ret)}</b></span>`);
-  if (c) parts.push(`<span>${ic('flame')}Печене <b>${esc(fmtDT(ts(c)))}</b></span>`);
-  $('wz_tl').innerHTML = parts.length ? parts.join('<i class="tl-ar">→</i>') : '<span class="muted">Избери кога замесваш — ще подредя времето.</span>';
+  const bulk = hoursBetween(a, b), ret = hoursBetween(b, c), tt = x => fmtDT(ts(x));
+  if (a) parts.push('замес ' + tt(a));
+  if (bulk) parts.push('насипна ' + fmtH(bulk));
+  if (ret) parts.push('ретардация ' + fmtH(ret));
+  if (c) parts.push('печене ' + tt(c));
+  $('wz_tl').innerHTML = parts.length ? '<b>Накратко:</b> ' + esc(parts.join(' → ')) : '<b>Накратко:</b> избери кога замесваш и ще подредя времето.';
   const mth = $('new_method').value; document.querySelectorAll('#wz_methods .wz-mc').forEach(b2 => b2.classList.toggle('on', b2.dataset.k === mth));
   const rv = $('wz_review'); if (!rv) return;
   const f = readFlour('new_flourRows'), m = metrics({flour: f.str, flourTotal: f.total, water: waterGrams('new'), starter: $('new_starter').value, salt: $('new_salt').value, starterHydration: $('new_sh').value});
-  const pr = BAKE_PRESETS[mth] && BAKE_PRESETS[mth].phases ? BAKE_PRESETS[mth].phases.map(x => `${x.name} ${x.min} мин · ${x.temp}°`).join(' → ') : 'ще го зададеш при печене';
+  [['h', m.hydr], ['s', m.starterPct], ['t', m.saltPct]].forEach(([kk, v]) => { const el = $('wz_pc_' + kk); if (el) el.textContent = v == null || isNaN(v) ? '' : pct(v); });
+  const pr = WZ.ph.length ? WZ.ph.map(x => `${x.name} ${x.min} мин${x.temp ? ' · ' + x.temp + '°' : ''}`).join(' → ') : 'ще го зададеш при печене';
   const stp = stepsSt.new.filter(x => String(x.name).trim()).map(x => esc(x.name)).join(', ');
   rv.innerHTML = `<div class="rv-t">${esc($('new_name').value.trim() || 'Нов хляб')}</div>
     <div class="rv-s">${esc(f.str || 'Още няма брашно')}</div>
     <div class="rv-chips">${m.hydr != null ? `<span class="chip blue">${ic('droplet')}${pct(m.hydr)}</span>` : ''}${m.starterPct != null ? `<span class="chip">${ic('jar')}${pct(m.starterPct)}</span>` : ''}${m.saltPct != null ? `<span class="chip">${ic('salt')}${pct(m.saltPct)}</span>` : ''}${$('new_folds').value ? `<span class="chip">${ic('fold')}${esc($('new_folds').value)} сгъв.</span>` : ''}${parseInt($('new_autolyse').value, 10) > 0 ? `<span class="chip">${ic('hourglass')}автолиза ${esc($('new_autolyse').value)} мин</span>` : ''}</div>
-    <div class="rv-tl">${$('wz_tl').innerHTML}</div>
+    <div class="rv-s">${$('wz_tl').innerHTML}</div>
     ${stp ? `<div class="rv-s">${ic('layers')} ${stp}</div>` : ''}
     <div class="rv-s">${ic('lid')} ${esc(pr)}</div>`;
+}
+function wzPhases(fromMethod) {
+  const box = $('wz_phases'); if (!box) return;
+  const m = $('new_method').value, pr = BAKE_PRESETS[m];
+  if (fromMethod) WZ.ph = pr && pr.phases ? pr.phases.map(x => Object.assign({}, x)) : [];
+  box.innerHTML = '<div class="wz-lab">Фази и температура</div>' + WZ.ph.map((p, i) => `<div class="wz-ph" data-i="${i}"><input type="text" data-f="name" value="${esc(p.name)}" aria-label="Фаза"><span class="wz-u" data-u="мин"><input type="number" data-f="min" value="${esc(p.min)}" inputmode="numeric" aria-label="Минути"></span><span class="wz-u" data-u="°"><input type="number" data-f="temp" value="${esc(p.temp)}" inputmode="numeric" aria-label="Градуси"></span><button type="button" class="mini-x" data-del="${i}" aria-label="Премахни фаза">×</button></div>`).join('') + '<button type="button" class="link-btn" data-add="1">+ Добави фаза</button>';
 }
 function wzGo(i, dir) {
   const form = $('newBreadForm'), steps = [...form.querySelectorAll('.wz-step')]; if (!steps.length) return;
@@ -1360,24 +1396,37 @@ function buildWizard() {
   const tm = (h, m2, plusDay) => { const d = new Date(); d.setHours(h, m2, 0, 0); if (plusDay) d.setDate(d.getDate() + 1); else if (d.getTime() < Date.now()) d.setDate(d.getDate() + 1); return d.getTime(); };
   qchips(k[5], [['Сега', () => Date.now()]], it => { setDT('new_start', it[1]()); wzRefresh(); });
     // стъпка 3 — ретардация
-  const tg = document.createElement('label'); tg.className = 'wz-tg'; tg.innerHTML = '<input type="checkbox" id="wz_noFridge"><span>Без ретардация — печем веднага след насипната</span>';
+  const tg = document.createElement('label'); tg.className = 'wz-tg'; tg.innerHTML = '<input type="checkbox" id="wz_noFridge"><span>Без ретардация</span>';
   tg.querySelector('input').addEventListener('change', wzToggleFridge);
   const tl = document.createElement('div'); tl.id = 'wz_tl'; tl.className = 'wz-tl';
   const fbox = document.createElement('div'); fbox.id = 'wz_fridgeBox'; grid.appendChild(fbox); fbox.append(k[8], k[9]);
   ['new_fridgeDate', 'new_fridgeTime', 'new_bakeDate', 'new_bakeTime', 'new_startDate', 'new_startTime'].forEach(id => $(id).addEventListener('input', wzRefresh));
-  const s2 = mk([k[5], c2, k[7], tg, fbox, tl]);
+  const s2 = mk([k[5], c2, tg, fbox, tl, k[7]]);
   // стъпка 3 — печене
   const mc = document.createElement('div'); mc.id = 'wz_methods'; mc.className = 'wz-methods';
   const mi = {dutch: 'lid', steam: 'droplet', free: 'flame', pan: 'bread', custom: 'edit'};
   mc.innerHTML = '<div class="wz-lab">Как печеш</div>' + Object.entries(BAKE_PRESETS).map(([key, v]) => `<button type="button" class="wz-mc" data-k="${key}">${ic(mi[key] || 'bread')}<b>${esc(({dutch: 'Тенджера', steam: 'С пара', free: 'Без пара', pan: 'Форма', custom: 'Друго'})[key] || v.label)}</b><small>${v.phases ? esc(v.phases.map(x => x.min + ' мин ' + x.name.toLowerCase()).join(' + ')) : 'сам задаваш'}</small></button>`).join('');
-  mc.addEventListener('click', ev => { const b = ev.target.closest('.wz-mc'); if (!b) return; $('new_method').value = b.dataset.k; wzRefresh(); });
+  mc.addEventListener('click', ev => { const b = ev.target.closest('.wz-mc'); if (!b) return; $('new_method').value = b.dataset.k; wzPhases(true); wzRefresh(); });
   k[10].hidden = true; k[11].hidden = true;
   const rvw = document.createElement('div'); rvw.id = 'wz_review'; rvw.className = 'wz-review';
   const s3 = mk([mc, k[10], rvw, k[11]]);
+  // проценти под съставките
+  [['h', 0], ['s', 1], ['t', 2]].forEach(([kk, i]) => { const d = document.createElement('div'); d.className = 'wz-pc'; d.id = 'wz_pc_' + kk; k[2].children[i].appendChild(d); });
+  // ретардацията е една карта
+  const fh = document.createElement('div'); fh.className = 'wz-fh'; fh.innerHTML = ic('snowflake') + 'Ретардация (хладилник)'; fbox.insertBefore(fh, fbox.firstChild);
+  k[8].querySelector('label').textContent = 'Започва'; k[9].querySelector('label').textContent = 'Изваждаш';
+  // фази и температура
+  const phc = document.createElement('div'); phc.id = 'wz_phases'; phc.className = 'wz-phc'; s3.insertBefore(phc, rvw);
+  phc.addEventListener('input', ev => { const r = ev.target.closest('.wz-ph'); if (!r) return; const p = WZ.ph[+r.dataset.i]; if (!p) return; p[ev.target.dataset.f] = ev.target.value; if (ev.target.dataset.f === 'name') p.k = phaseKind(ev.target.value); wzRefresh(); });
+  phc.addEventListener('click', ev => { const d = ev.target.closest('[data-del]'); if (d) { WZ.ph.splice(+d.dataset.del, 1); wzPhases(); wzRefresh(); } if (ev.target.closest('[data-add]')) { WZ.ph.push({k: 'dry', name: 'Печене', min: 15, temp: ''}); wzPhases(); wzRefresh(); } });
+  wzPhases(true);
   // заглавия с въпроси, иконки пред етикетите
   [[s1, 'Какво замесваш?'], [s2, 'Кога и колко дълго?'], [s3, 'Как ще печеш?']].forEach(([st, t]) => { const h = document.createElement('div'); h.className = 'wz-q'; h.textContent = t; st.insertBefore(h, st.firstChild); });
   const labIc = (root, idx, name) => { const l = root.querySelectorAll('label')[idx]; if (l && !l.querySelector('.i')) l.insertAdjacentHTML('afterbegin', ic(name)); };
   labIc(k[1], 0, 'wheat'); labIc(k[2], 0, 'droplet'); labIc(k[2], 1, 'jar'); labIc(k[2], 2, 'salt'); labIc(k[3], 0, 'jar');
+  k[6].querySelectorAll('label')[0].textContent = 'Автолиза'; k[6].querySelectorAll('label')[1].textContent = 'Сгъвания'; k[6].querySelectorAll('label')[2].textContent = 'Интервал';
+  k[6].querySelectorAll('label')[2].textContent = 'На всеки'; $('new_autolyse').placeholder = '40'; $('new_folds').placeholder = '4'; $('new_foldInt').placeholder = '30';
+  ['минути', 'пъти', 'минути'].forEach((u, i) => { const d = document.createElement('div'); d.className = 'wz-pc'; d.style.color = 'var(--muted)'; d.textContent = u; k[6].children[i].appendChild(d); });
   labIc(k[5], 0, 'play'); labIc(k[6], 0, 'hourglass'); labIc(k[6], 1, 'fold'); labIc(k[6], 2, 'clock'); labIc(k[8], 0, 'snowflake'); labIc(k[9], 0, 'flame'); labIc(k[10], 0, 'lid');
   // лента със стъпки и навигация
   const bar = document.createElement('div'); bar.id = 'wz_bar'; bar.className = 'wz-bar';
@@ -1475,6 +1524,7 @@ $('newBreadForm').addEventListener('submit', ev => {
     rating: '', notes: '', createdAt: Date.now()
   };
   entry.bakeMethod = $('new_method').value; if (BAKE_PRESETS[entry.bakeMethod] && BAKE_PRESETS[entry.bakeMethod].phases) { entry.bakePhases = BAKE_PRESETS[entry.bakeMethod].phases.map(x => Object.assign({}, x)); if (BAKE_PRESETS[entry.bakeMethod].vessel) entry.vessel = BAKE_PRESETS[entry.bakeMethod].vessel; }
+  if (WZ.ph.length) entry.bakePhases = WZ.ph.filter(x => String(x.name).trim()).map(x => ({k: x.k || phaseKind(x.name), name: String(x.name).trim(), min: Math.max(1, parseFloat(x.min) || 1), temp: x.temp || ''}));
   const stp = cleanSteps('new'); if (stp.length) entry.steps = stp;
   if (f.total > 0) entry.flourTotal = f.total;
   breadHistory.unshift(entry);
