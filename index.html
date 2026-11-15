@@ -482,6 +482,25 @@ html[data-theme=wheat] .logo{border-radius:50%}
 .b-tile{animation:rise2 .6s cubic-bezier(.2,.9,.25,1.12) both}.bento>:nth-child(3){animation-delay:.1s}.bento>:nth-child(4){animation-delay:.18s}.bento>:nth-child(5){animation-delay:.26s}.bento>:nth-child(6){animation-delay:.34s}
 html.noanim .amb,html.noanim .b-hero,html.noanim .hero,html.noanim .logo,html.noanim .nav-fab{animation:none!important}html.noanim .amb{display:none}
 
+/* ===== v3.3 ===== */
+.ring>svg{width:100%;height:100%;transform:rotate(-90deg)}.ring .ring-in svg,.ring .b-ic svg{transform:none}
+.dg{display:inline-block;width:.84em;text-align:center}
+.tc-img{overflow:hidden}.tc-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tc-body{min-height:62px}
+.tile-card{display:flex;flex-direction:column}.tile-card .tc-body{flex:1}
+.np-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}.np-head h2{margin:0}
+.np-tools{display:flex;gap:8px}.np-tools .icon-btn{width:42px;height:42px;border-radius:14px;box-shadow:none}
+.np-tools .icon-btn.on{background:var(--primary);color:var(--on-primary);border-color:transparent}
+.np-panel{margin:10px 0 14px;padding:14px;border-radius:20px;background:var(--surface-2);border:1px solid var(--line);animation:rise2 .4s cubic-bezier(.2,.9,.25,1.12) both}
+.np-panel[hidden]{display:none}
+.np-title{display:flex;align-items:center;gap:8px;font-family:var(--fd);font-weight:700;font-size:.82rem;margin-bottom:10px;letter-spacing:-.02em}
+.pdots{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 12px;scrollbar-width:none}.pdots::-webkit-scrollbar{display:none}
+.pd{flex-shrink:0;max-width:60vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1px solid var(--line);background:var(--surface);color:var(--muted);font:inherit;font-weight:800;font-size:.76rem;padding:8px 14px;border-radius:999px;cursor:pointer;transition:all .3s}
+.pd.on{background:var(--text);color:var(--bg);border-color:transparent;transform:scale(1.04)}
+.pager{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;align-items:flex-start;scrollbar-width:none;margin:0 -14px;padding:0 14px 6px;scroll-padding:0 14px}.pager::-webkit-scrollbar{display:none}
+.pg-item{flex:0 0 100%;min-width:0;scroll-snap-align:center;scroll-snap-stop:always}
+.tab-content.active>.pager{animation:none}
+.b-col{display:grid;grid-auto-rows:1fr;gap:10px}
 /* кухненски режим */
 html.kitchen{font-size:112.5%;--bg:#0b0807;--surface:#1b1410;--surface-2:#251c15;--text:#fff6ea;--muted:#cdb59f;--primary:#ff9a45;--primary-2:#ffb870;--accent:#ffb347;--on-primary:#1f0e03;--line:#3d3024;--chip:#2c2218;--hero-1:#3a2210;--hero-2:#64360f}
 html.kitchen .btn-primary{padding:20px 18px;font-size:1.15rem}
@@ -600,16 +619,21 @@ html.kitchen .nav-btn{font-size:.72rem}
   <!-- НОВ ХЛЯБ -->
   <section id="tab-new" class="tab-content">
     <div class="card">
-      <h2><i data-ic="repeat"></i>Започни от предишен</h2>
+      <div class="np-head"><h2><i data-ic="edit"></i>Нов хляб</h2>
+        <div class="np-tools">
+          <button type="button" class="icon-btn" id="npb_clone" onclick="npToggle('clone')" aria-label="Започни от предишен хляб" title="Започни от предишен"><i data-ic="repeat"></i></button>
+          <button type="button" class="icon-btn" id="npb_plan" onclick="npToggle('plan')" aria-label="Планиране отзад-напред" title="Планиране отзад-напред"><i data-ic="target"></i></button>
+        </div></div>
+      <div class="np-panel" id="np_clone" hidden>
+        <div class="np-title"><i data-ic="repeat"></i>Започни от предишен</div>
       <div class="two">
         <div class="form-group"><label>Рецепта</label><select id="cloneSelect"></select></div>
         <div class="form-group"><label>Мащаб (×)</label><input type="number" id="cloneScale" value="1" step="0.1" min="0.1" inputmode="decimal"></div>
       </div>
       <div class="btn-row"><button type="button" class="btn-soft" onclick="applyClone()"><i data-ic="scale"></i>Попълни формата</button></div>
-    </div>
-
-    <div class="card">
-      <h2><i data-ic="target"></i>Планиране отзад-напред</h2>
+      </div>
+      <div class="np-panel" id="np_plan" hidden>
+        <div class="np-title"><i data-ic="target"></i>Планиране отзад-напред</div>
       <p class="muted" style="margin-top:0">Кажи кога искаш да печеш — ще изчисля кога да замесиш и да прибереш в хладилника.</p>
       <div class="form-grid">
         <div class="form-group"><label>Искам да извадя и пека на</label><input type="datetime-local" id="plan_target"></div>
@@ -620,10 +644,7 @@ html.kitchen .nav-btn{font-size:.72rem}
       </div>
       <div class="btn-row"><button type="button" class="btn-soft" onclick="planCalc()"><i data-ic="sparkles"></i>Изчисли графика</button></div>
       <div id="planResult" class="insight"></div>
-    </div>
-
-    <div class="card">
-      <h2><i data-ic="edit"></i>Нов хляб</h2>
+      </div>
       <form id="newBreadForm" autocomplete="off">
         <div class="form-grid">
           <div class="form-group"><label>Име (по желание)</label><input type="text" id="new_name" placeholder="напр. Селски с ръж"></div>
@@ -980,7 +1001,7 @@ function showTab(name) {
   if (name === 'diary') renderHistory();
   window.scrollTo(0, 0);
 }
-const APP_VERSION = '3.2.0';
+const APP_VERSION = '3.3.0';
 const userName = () => (localStorage.getItem('hlebIvo_userName') || '').trim();
 function renderGreeting() {
   const h = new Date().getHours(), g = h < 5 ? 'Лека нощ' : h < 11 ? 'Добро утро' : h < 18 ? 'Добър ден' : 'Добър вечер';
@@ -1090,6 +1111,9 @@ function avgTimes(list) {
   return {counter: avg(c), fridge: avg(f)};
 }
 const half = v => Math.round(v * 2) / 2;
+function npToggle(k) {
+  ['clone', 'plan'].forEach(x => { const el = $('np_' + x), on = x === k && el.hidden; el.hidden = !on; $('npb_' + x).classList.toggle('on', on); });
+}
 function initNewForm() {
   const now = new Date(), iso = splitDateTime(localISO(now));
   if (!$('new_startDate').value) { $('new_startDate').value = iso.date; $('new_startTime').value = iso.time; }
@@ -1108,6 +1132,7 @@ function initNewForm() {
   updatePreview();
 }
 function applyClone() {
+  if ($('np_clone')) { $('np_clone').hidden = true; $('npb_clone').classList.remove('on'); }
   const e = byId($('cloneSelect').value); if (!e) { toast('Няма избрана рецепта'); return; }
   const k = parseFloat($('cloneScale').value) || 1, sc = v => (v === '' || v == null || isNaN(parseFloat(v))) ? '' : Math.round(parseFloat(v) * k * 10) / 10;
   $('new_name').value = e.name || '';
@@ -1252,6 +1277,13 @@ function isActive(e) {
 /* ============ Таб „Сега“ ============ */
 let lastSig = '';
 const sigActive = list => list.map(e => { const n = nextEvent(e, Date.now()); return e.id + getStage(e).label + (n ? n.t : '') + foldLog(e).length + (e.steps || []).filter(x => x.done).length; }).join('|');
+let pagerIdx = 0;
+function pagerGo(i) { const pg = document.querySelector('#tab-now .pager'); if (pg) pg.scrollTo({left: pg.clientWidth * i, behavior: 'smooth'}); }
+document.addEventListener('scroll', ev => {
+  const pg = ev.target; if (!pg || !pg.classList || !pg.classList.contains('pager') || !pg.clientWidth) return;
+  const i = Math.round(pg.scrollLeft / pg.clientWidth); if (i === pagerIdx) return; pagerIdx = i;
+  document.querySelectorAll('#tab-now .pd').forEach((b, k) => { b.classList.toggle('on', k === i); if (k === i) b.scrollIntoView({inline: 'center', block: 'nearest', behavior: 'smooth'}); });
+}, true);
 function renderActive() {
   const box = $('tab-now'), now = Date.now();
   const list = breadHistory.filter(isActive).sort((a, b) => (ts(a.startDateTime) || 0) - (ts(b.startDateTime) || 0));
@@ -1260,7 +1292,12 @@ function renderActive() {
     box.innerHTML = `<div class="empty"><div class="art">${ic('bread')}</div><p>Няма хляб в процес.<br><span class="muted">Започни нов и ще следя всяка стъпка.</span></p><button class="btn-primary" style="max-width:280px;margin:0 auto" onclick="showTab('new')">${ic('plus')}Започни нов хляб</button></div>` + starterStripHtml() + hiddenList();
     return;
   }
-  box.innerHTML = list.map(e => activeCard(e, now)).join('') + starterStripHtml() + hiddenList();
+  if (pagerIdx >= list.length) pagerIdx = list.length - 1;
+  const cards = list.length > 1
+    ? `<div class="pdots">${list.map((e, i) => `<button type="button" class="pd ${i === pagerIdx ? 'on' : ''}" onclick="pagerGo(${i})">${esc(breadName(e))}</button>`).join('')}</div><div class="pager">${list.map(e => `<div class="pg-item">${activeCard(e, now)}</div>`).join('')}</div>`
+    : activeCard(list[0], now);
+  box.innerHTML = cards + starterStripHtml() + hiddenList();
+  const pgr = box.querySelector('.pager'); if (pgr) pgr.scrollTo({left: pgr.clientWidth * pagerIdx, behavior: 'instant'});
   if (list.some(e => ts(e.ovenDateTime) && getStage(e, now).i === 2)) keepAwake();
   tick(true);
 }
@@ -1299,7 +1336,7 @@ function bentoCard(c) {
         <div class="ring b-ring"><svg viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="52"/><circle class="fg" cx="60" cy="60" r="52" ${ringAttr}/></svg><div class="b-ic">${ic(stg.ico)}</div></div></div>
     </div>
     <div class="b-ribbon"><div class="stepper">${stepper}</div></div>
-    ${fold}${sTile}${minis}
+    ${fold}${fold ? `<div class="b-col">${minis}</div>` : minis}
     ${(stg.i === 0 || stg.i === 1) && (e.steps || []).length ? `<div class="b-tile b-wide dk">${stepsPanel(e, now)}</div>` : ''}
     ${stg.i === 0 ? `<div class="b-tile b-wide dk">${readyPanel(e, 'f')}</div>` : ''}
     ${(stg.i === 1 || (stg.i === 2 && !ov(e))) ? `<div class="b-tile b-wide dk">${readyPanel(e, 'b')}</div>` : ''}
@@ -1861,14 +1898,17 @@ const RING = 326.7;
 let tickN = 0;
 function tick(skipSig) {
   const now = Date.now();
-  document.querySelectorAll('[data-since]').forEach(el => { el.textContent = fmtDur(now - (+el.dataset.since)); });
-  document.querySelectorAll('[data-until]').forEach(el => { const d = +el.dataset.until - now; el.textContent = d > 0 ? fmtDur(d) : 'сега'; });
+  const setT = (el, txt) => {
+    if (el._t === txt) return; el._t = txt;
+    if (el.closest('.ring-val')) el.innerHTML = txt.replace(/\d/g, d => `<span class="dg">${d}</span>`); else el.textContent = txt;
+  };
+  document.querySelectorAll('[data-since]').forEach(el => setT(el, fmtDur(now - (+el.dataset.since))));
+  document.querySelectorAll('[data-until]').forEach(el => { const d = +el.dataset.until - now; setT(el, d > 0 ? fmtDur(d) : 'сега'); });
   document.querySelectorAll('.ring .fg').forEach(c => {
     let p = 1;
     if (!c.dataset.full) { const a = +c.dataset.from, b = +c.dataset.to; p = b > a ? Math.min(1, Math.max(0.02, (now - a) / (b - a))) : 1; }
     c.style.strokeDasharray = `${(p * RING).toFixed(1)} ${RING}`;
   });
-  document.querySelectorAll('.ring-val [data-until],.ring-val [data-since]').forEach(el => { const t = el.textContent; if (el._p !== undefined && el._p !== t) { el.classList.remove('tk'); void el.offsetWidth; el.classList.add('tk'); } el._p = t; });
   if (skipSig === true) return;
   tickN++;
   if (tickN % 5 === 0) checkReminders();
