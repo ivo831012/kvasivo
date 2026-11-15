@@ -90,7 +90,10 @@ label{font-weight:800;font-size:.68rem;color:var(--muted);text-transform:upperca
 input,select,textarea{width:100%;padding:12px 13px;border:1.5px solid var(--line);border-radius:var(--r-sm);font:inherit;font-size:16px;background:var(--surface-2);color:var(--text);transition:var(--ease)}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary);background:var(--surface);box-shadow:0 0 0 4px color-mix(in srgb,var(--primary) 16%,transparent)}
 .time-row{display:flex;gap:8px}.time-row input{flex:1;min-width:0}
-.flour-row{display:grid;grid-template-columns:1fr 92px 40px;gap:8px;margin-bottom:8px}
+.flour-row{display:grid;grid-template-columns:minmax(0,1fr) auto 40px;gap:8px;margin-bottom:8px;align-items:center}
+.flour-row .gstep input{flex:none;width:64px;padding-left:4px;padding-right:4px}
+.flour-row .ns-b{width:36px;height:42px}
+.flour-row .mini-x{height:42px}
 .mini-x{border:none;border-radius:var(--r-sm);background:color-mix(in srgb,var(--danger) 14%,transparent);color:var(--danger);cursor:pointer;display:grid;place-items:center}
 .link-btn{background:none;border:none;color:var(--primary);font:inherit;font-weight:800;font-size:.85rem;cursor:pointer;padding:4px 0;text-align:left;display:inline-flex;align-items:center;gap:6px}
 
@@ -518,6 +521,76 @@ html.kitchen .ring{width:150px;height:150px}html.kitchen .ring-val{font-size:1.7
 html.kitchen .chip.blue{color:#8fd0ff}html.kitchen .chip.indigo{color:#c0b8ff}
 html.kitchen .nav-btn{font-size:.72rem}
 .app-foot{text-align:center;color:var(--muted);font-size:.72rem;font-weight:600;margin:24px 0 8px;line-height:1.6}
+
+/* v3.5 — съветник, умни контроли, раздели */
+.wz-step [hidden],.ed-sec [hidden]{display:none!important}
+#newBreadForm{padding-bottom:70px}
+.wz-bar{position:relative;display:flex;justify-content:space-between;gap:6px;margin:4px 0 18px;padding:0 2px}
+.wz-line{position:absolute;left:8%;right:8%;top:19px;height:3px;border-radius:3px;background:var(--line);overflow:hidden}
+.wz-line>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary-2),var(--primary));transition:width .45s cubic-bezier(.3,.9,.3,1)}
+.wz-pill{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:none;padding:0;color:var(--muted);font:600 11px var(--fb);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wz-pill .i{box-sizing:content-box;width:20px;height:20px;padding:9px;border-radius:50%;background:var(--surface);border:2px solid var(--line);transition:all .3s;position:relative;z-index:1}
+.wz-pill.done .i{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.wz-pill.cur .i{border-color:var(--primary);color:var(--primary);transform:scale(1.12);box-shadow:0 6px 18px -6px var(--primary)}
+.wz-pill.cur{color:var(--text)}
+.wz-step{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+.wz-step[hidden]{display:none}
+.wz-step.in-r{animation:wzR .35s cubic-bezier(.3,.9,.3,1)}
+.wz-step.in-l{animation:wzL .35s cubic-bezier(.3,.9,.3,1)}
+@keyframes wzR{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
+@keyframes wzL{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
+html.noanim .wz-step{animation:none!important}
+.wz-nav{position:sticky;bottom:calc(76px + env(safe-area-inset-bottom));display:flex;gap:10px;margin-top:16px;padding:10px 0 2px;background:linear-gradient(transparent,var(--bg) 35%);z-index:5}
+.wz-nav .btn-primary{flex:1;display:flex;align-items:center;justify-content:center;gap:8px}
+.wz-nav .btn-soft{display:flex;align-items:center;gap:6px}
+.wz-nav .btn-soft .i{transform:rotate(180deg)}
+.wz-nav .i{width:18px;height:18px}
+.qchips{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-top:8px}
+.qlab{font:600 11px var(--fb);color:var(--muted);width:100%}
+.qc{background:var(--chip);border:1px solid var(--line);color:var(--text);border-radius:999px;padding:8px 13px;font:600 13px var(--fb);cursor:pointer;transition:transform .15s,background .2s}
+.qc:active{transform:scale(.93);background:var(--primary);color:var(--on-primary)}
+.nstep,.gstep{display:flex;align-items:center;gap:6px}
+.nstep input,.gstep input{text-align:center;min-width:0;flex:1}
+.ns-b{flex:none;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--chip);color:var(--text);font:700 20px var(--fb);cursor:pointer;line-height:1}
+.ns-b:active{transform:scale(.92);background:var(--primary);color:var(--on-primary)}
+.gstep{flex:1;min-width:0}
+.wz-lab{font:700 12px var(--fb);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.wz-sl-box{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 16px}
+.wz-sl{margin-bottom:14px}.wz-sl:last-child{margin-bottom:2px}
+.wz-sl-h{display:flex;align-items:baseline;gap:10px;font:600 14px var(--fb)}
+.wz-sl-h b{font:700 18px var(--fd);color:var(--primary)}
+.wz-sl-h small{margin-left:auto;color:var(--muted);font-size:12px}
+.wz-sl input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:30px;background:transparent;margin:4px 0 0;--p:50%}
+.wz-sl input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:8px;background:linear-gradient(90deg,var(--primary) var(--p),var(--line) var(--p))}
+.wz-sl input[type=range]::-moz-range-track{height:8px;border-radius:8px;background:var(--line)}
+.wz-sl input[type=range]::-moz-range-progress{height:8px;border-radius:8px;background:var(--primary)}
+.wz-sl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:-9px;border-radius:50%;background:#fff;border:3px solid var(--primary);box-shadow:0 3px 10px rgba(0,0,0,.25)}
+.wz-sl input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--primary)}
+.wz-adv{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:4px 14px}
+.wz-adv summary{padding:12px 0;font:600 13px var(--fb);color:var(--muted);cursor:pointer}
+.wz-adv[open]{padding-bottom:14px}.wz-adv[open]>*:not(summary){margin-top:10px}
+.wz-tl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;font:500 13px var(--fb)}
+.wz-tl>span{display:inline-flex;align-items:center;gap:6px}.wz-tl .i{width:16px;height:16px;color:var(--primary)}
+.tl-ar{color:var(--muted);font-style:normal}
+.wz-tg{display:flex;align-items:center;gap:12px;background:var(--chip);border:1px solid var(--line);border-radius:16px;padding:14px;font:600 14px var(--fb);cursor:pointer}
+.wz-tg input{width:22px;height:22px;accent-color:var(--primary);flex:none}
+#wz_fridgeBox{display:grid;gap:14px}#wz_fridgeBox[hidden]{display:none}
+.wz-methods{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wz-methods .wz-lab{grid-column:1/-1;margin:0}
+.wz-mc{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:14px;color:var(--text);cursor:pointer;transition:all .25s;font:500 12px var(--fb)}
+.wz-mc .i{width:26px;height:26px;color:var(--primary)}.wz-mc b{font:700 14px var(--fb)}.wz-mc small{color:var(--muted);font-size:11px}
+.wz-mc.on{border-color:var(--primary);background:var(--chip);box-shadow:0 8px 22px -12px var(--primary);transform:translateY(-2px)}
+.wz-review{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;display:grid;gap:10px}
+.rv-t{font:700 18px var(--fd)}.rv-s{font:500 13px var(--fb);color:var(--muted);display:flex;gap:6px;align-items:center}.rv-s .i{width:16px;height:16px;flex:none}
+.rv-chips{display:flex;flex-wrap:wrap;gap:6px}.rv-tl{display:flex;flex-wrap:wrap;gap:6px 10px;font:500 12px var(--fb)}.rv-tl span{display:inline-flex;gap:5px;align-items:center}.rv-tl .i{width:14px;height:14px}
+.ed-tabs{display:flex;gap:6px;position:sticky;top:0;z-index:6;background:var(--surface);padding:6px 0 10px}
+.ed-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;border:1px solid var(--line);background:var(--chip);color:var(--muted);border-radius:14px;padding:9px 4px;font:600 11px var(--fb);cursor:pointer;transition:all .25s}
+.ed-tab .i{width:20px;height:20px}
+.ed-tab.on{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.ed-sec{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}.ed-sec[hidden]{display:none}
+.ed-foot{position:sticky;bottom:0;padding:12px 0 4px;background:linear-gradient(transparent,var(--surface) 30%);z-index:6}
+.ed-foot button{width:100%}
+.rows{display:grid;grid-template-columns:1fr;gap:12px}
 </style>
 </head>
 <body>
@@ -539,6 +612,7 @@ html.kitchen .nav-btn{font-size:.72rem}
   <symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.500 14.500A2.500 2.500 0 0 0 11 12c0-1.380-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.500 2 4.900 4 6.500 2 1.600 3 3.500 3 5.500a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.500 2.500 0 0 0 2.500 2.500z"/></symbol>
   <symbol id="i-bread" viewBox="0 0 24 24"><path d="M2.500 15.500c0-5 4.400-9 9.500-9s9.500 4 9.500 9c0 1.100-.9 2-2 2h-15c-1.100 0-2-.9-2-2z"/><path d="M8.500 10.500l2.200 4.500M13 9.500l2.400 4.800M17 11.500l1.200 2.500"/><path d="M5 20.500h14"/></symbol>
   <symbol id="i-lid" viewBox="0 0 24 24"><path d="M3.500 13h17"/><path d="M5.500 13a6.500 6.500 0 0 1 13 0"/><path d="M12 6.500V4.500M10 4.500h4"/><path d="M5 13v4.500a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V13"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.500l4.500 4.500L19 7.500"/></symbol>
   <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.700 5.600 6.100.9-4.400 4.300 1 6.100L12 17l-5.400 2.900 1-6.100L3.200 9.500l6.100-.9z"/></symbol>
   <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9.500a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.500" r="3.500"/></symbol>
@@ -655,7 +729,7 @@ html.kitchen .nav-btn{font-size:.72rem}
       <div class="btn-row"><button type="button" class="btn-soft" onclick="planCalc()"><i data-ic="sparkles"></i>Изчисли графика</button></div>
       <div id="planResult" class="insight"></div>
       </div>
-      <form id="newBreadForm" autocomplete="off">
+      <form id="newBreadForm" autocomplete="off" novalidate>
         <div class="form-grid">
           <div class="form-group"><label>Име (по желание)</label><input type="text" id="new_name" placeholder="напр. Селски с ръж"></div>
 
@@ -832,7 +906,7 @@ html.kitchen .nav-btn{font-size:.72rem}
   <div class="modal-content">
     <button type="button" class="close-modal" onclick="closeModal('editModal')" aria-label="Затвори"><i data-ic="x"></i></button>
     <h2 class="modal-title"><i data-ic="edit"></i>Редакция и детайли</h2>
-    <form id="editBreadForm" autocomplete="off">
+    <form id="editBreadForm" autocomplete="off" novalidate>
       <input type="hidden" id="edit_id">
       <div class="form-grid">
         <h3 class="sec"><i data-ic="wheat"></i>Рецепта</h3>
@@ -1012,7 +1086,7 @@ function showTab(name) {
   if (name === 'diary') renderHistory();
   window.scrollTo(0, 0);
 }
-const APP_VERSION = '3.4.0';
+const APP_VERSION = '3.5.0';
 const userName = () => (localStorage.getItem('hlebIvo_userName') || '').trim();
 function renderGreeting() {
   const h = new Date().getHours(), g = h < 5 ? 'Лека нощ' : h < 11 ? 'Добро утро' : h < 18 ? 'Добър ден' : 'Добър вечер';
@@ -1045,9 +1119,10 @@ const pct = v => v == null || isNaN(v) ? '-' : Math.round(v * 10) / 10 + '%';
 
 function addFlourRow(containerId, name, grams) {
   const c = $(containerId), row = document.createElement('div'); row.className = 'flour-row';
-  row.innerHTML = `<input type="text" class="fl-name" placeholder="вид (бяло, типово…)" value="${esc(name || '')}"><input type="number" class="fl-g calc" inputmode="decimal" step="any" placeholder="гр" value="${esc(grams == null ? '' : grams)}"><button type="button" class="mini-x" aria-label="Махни">${ic('x')}</button>`;
+  row.innerHTML = `<input type="text" class="fl-name" placeholder="вид (бяло, типово…)" value="${esc(name || '')}"><div class="gstep"><button type="button" class="ns-b" data-d="-50" aria-label="Минус 50 грама">−</button><input type="number" class="fl-g calc" inputmode="decimal" step="any" placeholder="гр" value="${esc(grams == null ? '' : grams)}"><button type="button" class="ns-b" data-d="50" aria-label="Плюс 50 грама">+</button></div><button type="button" class="mini-x" aria-label="Махни">${ic('x')}</button>`;
   row.querySelector('.mini-x').onclick = () => { if (c.children.length > 1) { row.remove(); updatePreview(); } else { row.querySelectorAll('input').forEach(i => i.value = ''); updatePreview(); } };
   row.querySelectorAll('input').forEach(i => i.addEventListener('input', updatePreview));
+  row.querySelectorAll('.ns-b').forEach(b => b.onclick = () => { const i = row.querySelector('.fl-g'); i.value = Math.max(0, (parseFloat(i.value) || 0) + (+b.dataset.d)); updatePreview(); });
   c.appendChild(row);
 }
 function readFlour(containerId) {
@@ -1101,12 +1176,13 @@ function updatePreview() {
   updateWaterHint('new');
   const e = {flour: f.str, flourTotal: f.total, water: waterGrams('new'), starter: $('new_starter').value, salt: $('new_salt').value, starterHydration: $('new_sh').value};
   const m = metrics(e), box = $('newPreview');
-  if (!(m.flour > 0)) { box.innerHTML = '<span class="muted">Въведи брашно и вода, за да видиш пекарските проценти.</span>'; return; }
+  if (!(m.flour > 0)) { box.innerHTML = '<span class="muted">Въведи брашно и вода, за да видиш пекарските проценти.</span>'; if (typeof wzAfterPreview === 'function') wzAfterPreview(); return; }
   box.innerHTML = `<span class="chip blue">${ic('droplet')}Хидратация ${pct(m.hydr)}</span>` +
     (m.hydrTotal != null ? `<span class="chip blue">с квас ${pct(m.hydrTotal)}</span>` : '') +
     (m.starterPct != null ? `<span class="chip">${ic('jar')}Квас ${pct(m.starterPct)}</span>` : '') +
     (m.saltPct != null ? `<span class="chip">${ic('salt')}Сол ${pct(m.saltPct)}</span>` : '') +
     `<span class="chip">${ic('wheat')}Брашно ${Math.round(m.flour)}г</span>`;
+  if (typeof wzAfterPreview === 'function') wzAfterPreview();
 }
 document.addEventListener('input', ev => {
   if (ev.target.classList && ev.target.classList.contains('calc')) updatePreview();
@@ -1125,10 +1201,206 @@ const half = v => Math.round(v * 2) / 2;
 function npToggle(k) {
   ['clone', 'plan'].forEach(x => { const el = $('np_' + x), on = x === k && el.hidden; el.hidden = !on; $('npb_' + x).classList.toggle('on', on); });
 }
+/* ============ Съветник „Нов хляб“ и умни контроли ============ */
+const WZ = {i: 0, drive: true, busy: false, shown: false};
+const WZ_STEPS = [['wheat', 'Рецепта'], ['hourglass', 'Ферментация'], ['snowflake', 'Ретардация'], ['flame', 'Печене']];
+const FLOURS = ['Бяло', 'Типово', 'Пълнозърнесто', 'Ръжено', 'Спелта'];
+const SLD = [['h', 'Хидратация', 55, 100, 1, 75], ['s', 'Квас', 5, 40, 1, 20], ['t', 'Сол', 1, 3, .1, 2]];
+const dtOf = pf => { const d = $(pf + 'Date').value, t = $(pf + 'Time').value; return d && t ? ts(d + 'T' + t) : 0; };
+const isoOf = pf => combineDateTime($(pf + 'Date').value, $(pf + 'Time').value);
+const fire = el => el.dispatchEvent(new Event('input', {bubbles: true}));
+function qchips(host, items, fn, label) {
+  const d = document.createElement('div'); d.className = 'qchips';
+  d.innerHTML = (label ? `<span class="qlab">${esc(label)}</span>` : '') + items.map((it, i) => `<button type="button" class="qc" data-i="${i}">${esc(it[0])}</button>`).join('');
+  d.addEventListener('click', ev => { const b = ev.target.closest('.qc'); if (b) fn(items[+b.dataset.i], b); });
+  host.appendChild(d); return d;
+}
+function enhanceNum(id, step, min, max) {
+  const inp = $(id); if (!inp || inp.dataset.ns) return; inp.dataset.ns = 1;
+  const w = document.createElement('div'); w.className = 'nstep'; inp.parentNode.insertBefore(w, inp);
+  const mk = (t, d) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'ns-b'; b.textContent = t; b.setAttribute('aria-label', d < 0 ? 'Намали' : 'Увеличи');
+    b.onclick = () => { const v = parseFloat(inp.value) || 0; inp.value = String(Math.round(Math.min(max, Math.max(min, v + d)) * 10) / 10); fire(inp); }; return b; };
+  w.append(mk('−', -step), inp, mk('+', step));
+}
+const nowChip = (pf, clear) => host => qchips(host, clear ? [['Сега'], ['Изчисти']] : [['Сега']], it => { if (it[0] === 'Сега') setDT(pf, Date.now()); else { $(pf + 'Date').value = ''; $(pf + 'Time').value = ''; } if (pf.startsWith('new')) wzRefresh(); });
+
+function wzAddFlour(name) {
+  const c = $('new_flourRows'), rows = [...c.children]; let row = rows.find(r => !r.querySelector('.fl-name').value.trim() && !(parseFloat(r.querySelector('.fl-g').value) > 0));
+  if (rows.some(r => r.querySelector('.fl-name').value.trim().toLowerCase() === name.toLowerCase())) { toast(name + ' вече е добавено', {icon: 'info'}); return; }
+  if (!row) { addFlourRow('new_flourRows', '', ''); row = c.lastElementChild; }
+  row.querySelector('.fl-name').value = name;
+  row.querySelector('.fl-g').value = readFlour('new_flourRows').total > 0 ? 100 : 500;
+  updatePreview();
+}
+function wzSetTotal(n) {
+  const rows = [...$('new_flourRows').children], tot = readFlour('new_flourRows').total, gs = r => r.querySelector('.fl-g');
+  if (tot > 0) {
+    const w = rows.filter(r => parseFloat(gs(r).value) > 0); let acc = 0;
+    w.forEach((r, i) => { const v = i === w.length - 1 ? n - acc : Math.round(parseFloat(gs(r).value) * n / tot); gs(r).value = v; acc += v; });
+  } else {
+    let named = rows.filter(r => r.querySelector('.fl-name').value.trim()); if (!named.length) { rows[0].querySelector('.fl-name').value = 'Бяло'; named = [rows[0]]; }
+    let acc = 0; named.forEach((r, i) => { const v = i === named.length - 1 ? n - acc : Math.round(n / named.length); gs(r).value = v; acc += v; });
+  }
+  updatePreview();
+}
+function wzApplyAll() {
+  const tot = readFlour('new_flourRows').total; wzLabels(); if (!(tot > 0)) return;
+  WZ.busy = true; setWaterUnit('new', 'g', true);
+  SLD.forEach(([k]) => { const r = $('wz_' + k), v = parseFloat(r.value); wzPaint(r);
+    $(k === 'h' ? 'new_water' : k === 's' ? 'new_starter' : 'new_salt').value = k === 't' ? Math.round(tot * v / 10) / 10 : Math.round(tot * v / 100); });
+  updatePreview(); WZ.busy = false; wzLabels();
+}
+function wzPaint(r) {
+  const v = parseFloat(r.value), kk = r.dataset.k, shown = Math.round(v * 10) / 10;
+  r.style.setProperty('--p', ((Math.min(r.max, Math.max(r.min, v)) - r.min) / (r.max - r.min) * 100) + '%');
+  $('wz_' + kk + '_v').textContent = String(shown).replace('.', ',') + '%';
+}
+function wzLabels() {
+  const tot = readFlour('new_flourRows').total, w = waterGrams('new'), st = $('new_starter').value, sl = $('new_salt').value, pr = tot > 0;
+  $('wz_h_g').textContent = pr && w !== '' ? w + ' г вода' : '—'; $('wz_s_g').textContent = pr && st !== '' ? st + ' г квас' : '—'; $('wz_t_g').textContent = pr && sl !== '' ? sl + ' г сол' : '—';
+}
+function wzSyncSliders() {
+  const tot = readFlour('new_flourRows').total; if (!(tot > 0)) { wzLabels(); return; }
+  const vals = {h: parseFloat(waterGrams('new')) / tot * 100, s: parseFloat($('new_starter').value) / tot * 100, t: parseFloat($('new_salt').value) / tot * 100};
+  SLD.forEach(([k]) => { const r = $('wz_' + k); if (!isNaN(vals[k])) { r.value = Math.min(r.max, Math.max(r.min, Math.round(vals[k] * 10) / 10)); r.dataset.real = vals[k]; wzPaint(r); $('wz_' + k + '_v').textContent = (Math.round(vals[k] * 10) / 10 + '').replace('.', ',') + '%'; } });
+  wzLabels();
+}
+function wzAfterPreview() {
+  if (!$('wz_sliders') || WZ.busy) return;
+  if (WZ.drive) wzApplyAll(); else wzSyncSliders();
+  wzRefresh();
+}
+function wzReset() {
+  WZ.drive = true; WZ.shown = false; $('wz_noFridge').checked = false; wzToggleFridge();
+  SLD.forEach(([k, , , , , df]) => { $('wz_' + k).value = df; wzPaint($('wz_' + k)); }); wzLabels(); wzGo(0, -1);
+}
+function wzToggleFridge() {
+  const off = $('wz_noFridge').checked; $('wz_fridgeBox').hidden = off;
+  if (off) ['new_fridge', 'new_bake'].forEach(pf => { $(pf + 'Date').value = ''; $(pf + 'Time').value = ''; });
+  wzRefresh();
+}
+function wzRefresh() {
+  if (!$('wz_tl')) return;
+  const a = isoOf('new_start'), b = isoOf('new_fridge'), c = isoOf('new_bake'), parts = [];
+  const bulk = hoursBetween(a, b), ret = hoursBetween(b, c);
+  if (a) parts.push(`<span><i data-x="1">${ic('play')}</i>Замес <b>${esc(fmtDT(ts(a)))}</b></span>`);
+  if (bulk) parts.push(`<span>${ic('wheat')}Насипна <b>${fmtH(bulk)}</b></span>`);
+  if (ret) parts.push(`<span>${ic('snowflake')}Ретардация <b>${fmtH(ret)}</b></span>`);
+  if (c) parts.push(`<span>${ic('flame')}Печене <b>${esc(fmtDT(ts(c)))}</b></span>`);
+  $('wz_tl').innerHTML = parts.length ? parts.join('<i class="tl-ar">→</i>') : '<span class="muted">Избери кога замесваш — ще подредя времето.</span>';
+  const mth = $('new_method').value; document.querySelectorAll('#wz_methods .wz-mc').forEach(b2 => b2.classList.toggle('on', b2.dataset.k === mth));
+  const rv = $('wz_review'); if (!rv) return;
+  const f = readFlour('new_flourRows'), m = metrics({flour: f.str, flourTotal: f.total, water: waterGrams('new'), starter: $('new_starter').value, salt: $('new_salt').value, starterHydration: $('new_sh').value});
+  const pr = BAKE_PRESETS[mth] && BAKE_PRESETS[mth].phases ? BAKE_PRESETS[mth].phases.map(x => `${x.name} ${x.min} мин · ${x.temp}°`).join(' → ') : 'ще го зададеш при печене';
+  const stp = stepsSt.new.filter(x => String(x.name).trim()).map(x => esc(x.name)).join(', ');
+  rv.innerHTML = `<div class="rv-t">${esc($('new_name').value.trim() || 'Нов хляб')}</div>
+    <div class="rv-s">${esc(f.str || 'Още няма брашно')}</div>
+    <div class="rv-chips">${m.hydr != null ? `<span class="chip blue">${ic('droplet')}${pct(m.hydr)}</span>` : ''}${m.starterPct != null ? `<span class="chip">${ic('jar')}${pct(m.starterPct)}</span>` : ''}${m.saltPct != null ? `<span class="chip">${ic('salt')}${pct(m.saltPct)}</span>` : ''}${$('new_folds').value ? `<span class="chip">${ic('fold')}${esc($('new_folds').value)} сгъв.</span>` : ''}${parseInt($('new_autolyse').value, 10) > 0 ? `<span class="chip">${ic('hourglass')}автолиза ${esc($('new_autolyse').value)} мин</span>` : ''}</div>
+    <div class="rv-tl">${$('wz_tl').innerHTML}</div>
+    ${stp ? `<div class="rv-s">${ic('layers')} ${stp}</div>` : ''}
+    <div class="rv-s">${ic('lid')} ${esc(pr)}</div>`;
+}
+function wzGo(i, dir) {
+  const form = $('newBreadForm'), steps = [...form.querySelectorAll('.wz-step')]; if (!steps.length) return;
+  i = Math.max(0, Math.min(steps.length - 1, i)); dir = dir == null ? (i >= WZ.i ? 1 : -1) : dir;
+  steps.forEach((st, k) => { st.hidden = k !== i; st.classList.remove('in-r', 'in-l'); if (k === i) { void st.offsetWidth; st.classList.add(dir > 0 ? 'in-r' : 'in-l'); } });
+  WZ.i = i;
+  document.querySelectorAll('#wz_bar .wz-pill').forEach((b, k) => { b.classList.toggle('cur', k === i); b.classList.toggle('done', k < i); });
+  $('wz_fill').style.width = (i / (steps.length - 1) * 100) + '%';
+  $('wz_back').style.visibility = i === 0 ? 'hidden' : 'visible'; $('wz_next').innerHTML = i === steps.length - 1 ? ic('check') + 'Запази хляба' : 'Напред ' + ic('arrow');
+  wzRefresh();
+  if (WZ.shown !== 'init') { const el = $('wz_bar'); if (el && $('tab-new').classList.contains('active')) window.scrollTo({top: Math.max(0, el.getBoundingClientRect().top + window.scrollY - 90), behavior: 'smooth'}); }
+}
+function wzNext() {
+  if (WZ.i === 0 && !readFlour('new_flourRows').str) { toast('Добави поне едно брашно', {icon: 'alert', warn: true}); return; }
+  if (WZ.i >= 1 && !dtOf('new_start')) { wzGo(1); toast('Избери кога замесваш', {icon: 'alert', warn: true}); return; }
+  if (WZ.i < 3) wzGo(WZ.i + 1); else { if (!readFlour('new_flourRows').str) { wzGo(0); toast('Добави поне едно брашно', {icon: 'alert', warn: true}); return; } $('newBreadForm').requestSubmit(); }
+}
+function buildWizard() {
+  const form = $('newBreadForm'), grid = form.querySelector('.form-grid'), k = [...grid.children];
+  if (k.length !== 12) { console.warn('съветник: неочаквана форма'); return; }
+  const mk = nodes => { const d = document.createElement('div'); d.className = 'wz-step'; grid.appendChild(d); nodes.forEach(n => d.appendChild(n)); return d; };
+  // стъпка 1 — рецепта
+  const flc = document.createElement('div'); flc.className = 'wz-flc';
+  qchips(flc, FLOURS.map(n => [n]), it => wzAddFlour(it[0]), 'Добави вид');
+  qchips(flc, [300, 400, 500, 600, 800, 1000].map(n => [n + ' г', n]), it => wzSetTotal(it[1]), 'Общо брашно');
+  k[1].appendChild(flc);
+  const sl = document.createElement('div'); sl.id = 'wz_sliders'; sl.className = 'wz-sl-box';
+  sl.innerHTML = '<div class="wz-lab">Пропорции</div>' + SLD.map(([kk, l, mn, mx, st, df]) => `<div class="wz-sl"><div class="wz-sl-h"><span>${l}</span><b id="wz_${kk}_v">${df}%</b><small id="wz_${kk}_g">—</small></div><input type="range" id="wz_${kk}" data-k="${kk}" min="${mn}" max="${mx}" step="${st}" value="${df}" aria-label="${l}"></div>`).join('');
+  sl.addEventListener('input', ev => { const r = ev.target.closest('input[type=range]'); if (!r) return; WZ.drive = true; wzPaint(r); if (!(readFlour('new_flourRows').total > 0)) { toast('Първо добави брашно', {icon: 'info'}); } wzApplyAll(); });
+  const adv = document.createElement('details'); adv.className = 'wz-adv'; adv.innerHTML = '<summary>Точни грамове и закваска (ръчно)</summary>'; grid.appendChild(adv); adv.append(k[2], k[3]);
+  ['new_water', 'new_starter', 'new_salt'].forEach(id => $(id).addEventListener('input', () => { if (!WZ.busy) WZ.drive = false; }));
+  $('new_waterSeg').addEventListener('click', () => { WZ.drive = false; });
+  const s1 = mk([k[0], k[1], sl, adv, k[4]]);
+  // стъпка 2 — насипна ферментация
+  const c2 = k[6]; c2.classList.add('rows');
+  enhanceNum('new_autolyse', 15, 0, 240); enhanceNum('new_folds', 1, 0, 12); enhanceNum('new_foldInt', 5, 10, 120);
+  const grp = id => $(id).closest('.form-group');
+  qchips(grp('new_autolyse'), [0, 30, 45, 60, 90].map(n => [n ? n + ' мин' : 'Без', n]), it => { $('new_autolyse').value = it[1] || ''; fire($('new_autolyse')); });
+  qchips(grp('new_folds'), [0, 2, 3, 4, 5, 6].map(n => [n ? String(n) : 'Без', n]), it => { $('new_folds').value = it[1] || ''; fire($('new_folds')); });
+  qchips(grp('new_foldInt'), [20, 30, 45, 60].map(n => [n + ' мин', n]), it => { $('new_foldInt').value = it[1]; fire($('new_foldInt')); });
+  const tm = (h, m2, plusDay) => { const d = new Date(); d.setHours(h, m2, 0, 0); if (plusDay) d.setDate(d.getDate() + 1); else if (d.getTime() < Date.now()) d.setDate(d.getDate() + 1); return d.getTime(); };
+  qchips(k[5], [['Сега', () => Date.now()], ['След 1 ч', () => Date.now() + 3600000], ['Довечера 21:00', () => tm(21, 0)], ['Утре 07:00', () => tm(7, 0, 1)]], it => { setDT('new_start', it[1]()); wzRefresh(); });
+  const s2 = mk([k[5], c2, k[7]]);
+  // стъпка 3 — ретардация
+  const tg = document.createElement('label'); tg.className = 'wz-tg'; tg.innerHTML = '<input type="checkbox" id="wz_noFridge"><span>Без ретардация — печем веднага след насипната</span>';
+  tg.querySelector('input').addEventListener('change', wzToggleFridge);
+  const tl = document.createElement('div'); tl.id = 'wz_tl'; tl.className = 'wz-tl';
+  const fbox = document.createElement('div'); fbox.id = 'wz_fridgeBox'; grid.appendChild(fbox); fbox.append(k[8], k[9]);
+  qchips(k[8], [3, 4, 5, 6].map(h => [h + ' ч', h]), it => { const a = dtOf('new_start'); if (!a) { toast('Първо избери кога замесваш', {icon: 'alert', warn: true}); return; } setDT('new_fridge', a + it[1] * 3600000); wzRefresh(); }, 'След колко от замеса');
+  qchips(k[9], [8, 12, 16, 24].map(h => [h + ' ч', h]), it => { const a = dtOf('new_fridge'); if (!a) { toast('Първо задай началото на ретардацията', {icon: 'alert', warn: true}); return; } setDT('new_bake', a + it[1] * 3600000); wzRefresh(); }, 'Колко ретардация');
+  ['new_fridgeDate', 'new_fridgeTime', 'new_bakeDate', 'new_bakeTime', 'new_startDate', 'new_startTime'].forEach(id => $(id).addEventListener('input', wzRefresh));
+  const s3 = mk([tl, tg, fbox]);
+  // стъпка 4 — печене
+  const mc = document.createElement('div'); mc.id = 'wz_methods'; mc.className = 'wz-methods';
+  const mi = {dutch: 'lid', steam: 'droplet', free: 'flame', pan: 'bread', custom: 'edit'};
+  mc.innerHTML = '<div class="wz-lab">Как печеш</div>' + Object.entries(BAKE_PRESETS).map(([key, v]) => `<button type="button" class="wz-mc" data-k="${key}">${ic(mi[key] || 'bread')}<b>${esc(v.label)}</b><small>${v.phases ? esc(v.phases.map(x => x.min + ' мин ' + x.name.toLowerCase()).join(' + ')) : 'сам задаваш'}</small></button>`).join('');
+  mc.addEventListener('click', ev => { const b = ev.target.closest('.wz-mc'); if (!b) return; $('new_method').value = b.dataset.k; wzRefresh(); });
+  k[10].hidden = true; k[11].hidden = true;
+  const rvw = document.createElement('div'); rvw.id = 'wz_review'; rvw.className = 'wz-review';
+  const s4 = mk([mc, k[10], rvw, k[11]]);
+  // лента със стъпки и навигация
+  const bar = document.createElement('div'); bar.id = 'wz_bar'; bar.className = 'wz-bar';
+  bar.innerHTML = '<i class="wz-line"><i id="wz_fill"></i></i>' + WZ_STEPS.map(([ico, l], i) => `<button type="button" class="wz-pill" data-i="${i}">${ic(ico)}<span>${l}</span></button>`).join('');
+  bar.addEventListener('click', ev => { const b = ev.target.closest('.wz-pill'); if (!b) return; const i = +b.dataset.i; if (i > 0 && !readFlour('new_flourRows').str) { toast('Първо добави брашно', {icon: 'alert', warn: true}); return; } wzGo(i); });
+  form.insertBefore(bar, grid);
+  const nav = document.createElement('div'); nav.className = 'wz-nav'; nav.innerHTML = `<button type="button" class="btn-soft" id="wz_back">${ic('arrow')}Назад</button><button type="button" class="btn-primary" id="wz_next"></button>`;
+  form.appendChild(nav); $('wz_back').onclick = () => wzGo(WZ.i - 1); $('wz_next').onclick = wzNext;
+  WZ.shown = 'init'; wzGo(0, 1); WZ.shown = false; SLD.forEach(([kk]) => wzPaint($('wz_' + kk))); wzLabels();
+}
+/* ---------- Редакция: раздели вместо дълъг скрол ---------- */
+function edTab(i) {
+  document.querySelectorAll('#editBreadForm .ed-sec').forEach((s2, k) => s2.hidden = k !== i);
+  document.querySelectorAll('#editBreadForm .ed-tab').forEach((b, k) => b.classList.toggle('on', k === i));
+  const m = $('editModal').querySelector('.modal-content'); if (m) m.scrollTo({top: 0});
+}
+function buildEditTabs() {
+  const form = $('editBreadForm'), grid = form.querySelector('.form-grid'), kids = [...grid.children], groups = [];
+  kids.forEach(n => { if (n.tagName === 'H3') groups.push({h: n, nodes: []}); else if (groups.length) groups[groups.length - 1].nodes.push(n); });
+  if (groups.length !== 5) { console.warn('редакция: неочаквана форма'); return; }
+  const sub = grid.querySelector('button[type=submit]');
+  const tabs = [['Рецепта', 'wheat', [0]], ['Време', 'clock', [1, 2]], ['Печене', 'flame', [3]], ['Резултат', 'star', [4]]];
+  const bar = document.createElement('div'); bar.className = 'ed-tabs';
+  tabs.forEach(([l, ico, idx], ti) => {
+    bar.insertAdjacentHTML('beforeend', `<button type="button" class="ed-tab" data-t="${ti}">${ic(ico)}<span>${l}</span></button>`);
+    const sec = document.createElement('div'); sec.className = 'ed-sec form-grid';
+    idx.forEach(gi => { if (idx.length === 1) groups[gi].h.hidden = true; sec.appendChild(groups[gi].h); groups[gi].nodes.forEach(n => { if (n !== sub) sec.appendChild(n); }); });
+    grid.appendChild(sec);
+  });
+  bar.addEventListener('click', ev => { const b = ev.target.closest('.ed-tab'); if (b) edTab(+b.dataset.t); });
+  form.insertBefore(bar, grid);
+  if (sub) { const foot = document.createElement('div'); foot.className = 'ed-foot'; foot.appendChild(sub); form.appendChild(foot); }
+  [['edit_autolyse', 15, 0, 240], ['edit_folds', 1, 0, 12], ['edit_foldInt', 5, 10, 120], ['edit_roomTemp', 1, 5, 40], ['edit_ovenTemp', 10, 150, 300]].forEach(a => enhanceNum(...a));
+  const sh = $('edit_sh').closest('.three'); if (sh) sh.classList.add('rows');
+  const fi = $('edit_foldInt').closest('.two'); if (fi) fi.classList.add('rows');
+  [['edit_start', 0], ['edit_fridge', 1], ['edit_bake', 1], ['edit_oven', 1]].forEach(([pf, cl]) => nowChip(pf, cl)($(pf + 'Date').closest('.form-group')));
+  edTab(0);
+}
 function initNewForm() {
   const now = new Date(), iso = splitDateTime(localISO(now));
   if (!$('new_startDate').value) { $('new_startDate').value = iso.date; $('new_startTime').value = iso.time; }
   if (!$('new_flourRows').children.length) addFlourRow('new_flourRows');
+  if (!WZ.shown) { WZ.shown = true; wzGo(0, 1); }
   if (!$('new_sh').value) $('new_sh').value = defaultSH();
   if (!$('new_foldInt').value) $('new_foldInt').value = defaultFoldInt();
   const rated = breadHistory.filter(e => +e.rating >= 8), t = avgTimes(rated.length ? rated : breadHistory);
@@ -1143,6 +1415,7 @@ function initNewForm() {
   updatePreview();
 }
 function applyClone() {
+  WZ.drive = false;
   if ($('np_clone')) { $('np_clone').hidden = true; $('npb_clone').classList.remove('on'); }
   const e = byId($('cloneSelect').value); if (!e) { toast('Няма избрана рецепта'); return; }
   const k = parseFloat($('cloneScale').value) || 1, sc = v => (v === '' || v == null || isNaN(parseFloat(v))) ? '' : Math.round(parseFloat(v) * k * 10) / 10;
@@ -1186,7 +1459,7 @@ $('newBreadForm').addEventListener('submit', ev => {
   if (f.total > 0) entry.flourTotal = f.total;
   breadHistory.unshift(entry);
   if (!persist()) { breadHistory.shift(); return; }
-  $('newBreadForm').reset(); stepsSt.new = []; renderStepsEd('new'); $('new_flourRows').innerHTML = ''; setWaterUnit('new', 'g', true); $('planResult').innerHTML = '';
+  $('newBreadForm').reset(); stepsSt.new = []; renderStepsEd('new'); $('new_flourRows').innerHTML = ''; setWaterUnit('new', 'g', true); $('planResult').innerHTML = ''; wzReset();
   ['new_startDate', 'new_startTime'].forEach(i => $(i).value = '');
   toast('Хлябът е записан', {icon: 'check'});
   showTab('now'); renderGreeting(); checkReminders();
@@ -1738,6 +2011,7 @@ function renderPhotoGrid() {
 function removePhoto(i) { editPhotos.splice(i, 1); renderPhotoGrid(); }
 function mainPhoto(i) { editPhotos.unshift(editPhotos.splice(i, 1)[0]); renderPhotoGrid(); }
 function openEdit(id) {
+  edTab(0);
   closeModal('detailModal');
   const e = byId(id); if (!e) return;
   $('edit_id').value = id; $('edit_name').value = e.name || '';
@@ -2518,7 +2792,7 @@ function confetti() {
 }
 
 async function boot() {
-hydrateIcons(); fillMethodSelect('new_method'); fillMethodSelect('edit_method'); renderStepsEd('new'); renderStepsEd('edit'); load(); buildRateChips(); await bootPhotos();
+hydrateIcons(); fillMethodSelect('new_method'); fillMethodSelect('edit_method'); renderStepsEd('new'); renderStepsEd('edit'); buildWizard(); buildEditTabs(); load(); buildRateChips(); await bootPhotos();
 document.querySelectorAll('.appv').forEach(x => x.textContent = APP_VERSION);
 try { applyKitchen(localStorage.getItem('hlebIvo_kitchen') === '1'); } catch (e) {}
 renderAll();
