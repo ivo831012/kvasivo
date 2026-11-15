@@ -648,6 +648,26 @@ html[data-theme=wheat] #tab-new,html[data-theme=wheat] #editModal{--primary:#4F7
 .wz-ph input[type=number]::-webkit-inner-spin-button,.wz-ph input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 .wz-ph input[type=number]{-moz-appearance:textfield}
 .wz-step input[type=date],.wz-step input[type=time]{font-size:14px;padding-left:10px;padding-right:8px;min-width:0}
+
+/* v3.7.1 — подравняване, без лента при създаване */
+html.wizing .dock,html.wizing .topbar,html.wizing .app-foot{display:none!important}
+html.wizing body{padding-bottom:20px!important}
+html.wizing main,html.wizing .app,html.wizing #app{padding-bottom:16px!important}
+.np-back{flex:none}.np-back .i{transform:rotate(180deg)}
+.wz-step>.three{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:start}
+.wz-step>.three>.form-group{display:flex;flex-direction:column;justify-content:flex-start;min-width:0}
+.wz-step>.three label,.wz-step>.three .label-row{white-space:nowrap;min-height:20px!important;height:20px;margin:0 0 8px!important;display:flex;align-items:center;gap:6px;overflow:hidden;font-size:11px}
+.wz-step>.three label .i{width:15px;height:15px}
+.wz-step>.three input{width:100%!important;height:46px;box-sizing:border-box;text-align:center;margin:0}
+.wz-step>.three .wz-pc{text-align:center;margin-top:6px;white-space:nowrap}
+.wz-step>.three>.form-group .hint,.wz-step>.three>.form-group small{display:none}
+.wz-nav{display:flex;gap:10px;align-items:stretch}
+.wz-nav .btn-soft,.wz-nav .btn-primary{height:54px;min-height:54px;padding:0 16px;border-radius:16px;font:700 15px var(--fb)!important;display:flex;align-items:center;justify-content:center;gap:8px;box-sizing:border-box}
+.wz-nav .btn-soft{flex:1;color:var(--text);background:var(--chip)}
+.wz-nav .btn-primary{flex:2;background:linear-gradient(135deg,#7BA05B,#4F7A3A)!important;color:#fff!important;box-shadow:0 10px 22px -12px #4F7A3A}
+.wz-step .two,.wz-step .three{align-items:start}
+.wz-step>.three .label-row label{margin:0!important;height:auto!important;min-height:0!important}
+.wz-step>.three .label-row{margin:0 0 8px!important}
 </style>
 </head>
 <body>
@@ -760,7 +780,7 @@ html[data-theme=wheat] #tab-new,html[data-theme=wheat] #editModal{--primary:#4F7
   <!-- НОВ ХЛЯБ -->
   <section id="tab-new" class="tab-content">
     <div class="card">
-      <div class="np-head"><h2><i data-ic="edit"></i>Нов хляб</h2>
+      <div class="np-head"><button type="button" class="icon-btn np-back" onclick="showTab('now')" aria-label="Назад към началото"><i data-ic="arrow"></i></button><h2 style="flex:1">Нов хляб</h2>
         <div class="np-tools">
           <button type="button" class="icon-btn" id="npb_clone" onclick="npToggle('clone')" aria-label="Започни от предишен хляб" title="Започни от предишен"><i data-ic="repeat"></i></button>
           <button type="button" class="icon-btn" id="npb_plan" onclick="npToggle('plan')" aria-label="Планиране отзад-напред" title="Планиране отзад-напред"><i data-ic="target"></i></button>
@@ -1136,6 +1156,7 @@ document.addEventListener('keydown', ev => { if (ev.key === 'Escape') document.q
 function showTab(name) {
   document.querySelectorAll('.tab-content').forEach(el => el.classList.toggle('active', el.id === 'tab-' + name));
   document.querySelectorAll('.nav-btn').forEach(el => el.classList.toggle('active', el.dataset.tab === name));
+  document.documentElement.classList.toggle('wizing', name === 'new');
   if (name === 'new') initNewForm();
   if (name === 'stats') renderStats();
   if (name === 'now') renderActive();
@@ -1143,7 +1164,7 @@ function showTab(name) {
   if (name === 'diary') renderHistory();
   window.scrollTo(0, 0);
 }
-const APP_VERSION = '3.7.0';
+const APP_VERSION = '3.7.1';
 const userName = () => (localStorage.getItem('hlebIvo_userName') || '').trim();
 function renderGreeting() {
   const h = new Date().getHours(), g = h < 5 ? 'Лека нощ' : h < 11 ? 'Добро утро' : h < 18 ? 'Добър ден' : 'Добър вечер';
@@ -1349,7 +1370,7 @@ function wzRefresh() {
   const mth = $('new_method').value; document.querySelectorAll('#wz_methods .wz-mc').forEach(b2 => b2.classList.toggle('on', b2.dataset.k === mth));
   const rv = $('wz_review'); if (!rv) return;
   const f = readFlour('new_flourRows'), m = metrics({flour: f.str, flourTotal: f.total, water: waterGrams('new'), starter: $('new_starter').value, salt: $('new_salt').value, starterHydration: $('new_sh').value});
-  [['h', m.hydr], ['s', m.starterPct], ['t', m.saltPct]].forEach(([kk, v]) => { const el = $('wz_pc_' + kk); if (el) el.textContent = v == null || isNaN(v) ? '' : pct(v); });
+  [['h', m.hydr], ['s', m.starterPct], ['t', m.saltPct]].forEach(([kk, v]) => { const el = $('wz_pc_' + kk); if (el) el.textContent = v == null || isNaN(v) ? 'грама' : 'грама · ' + pct(v); });
   const pr = WZ.ph.length ? WZ.ph.map(x => `${x.name} ${x.min} мин${x.temp ? ' · ' + x.temp + '°' : ''}`).join(' → ') : 'ще го зададеш при печене';
   const stp = stepsSt.new.filter(x => String(x.name).trim()).map(x => esc(x.name)).join(', ');
   rv.innerHTML = `<div class="rv-t">${esc($('new_name').value.trim() || 'Нов хляб')}</div>
@@ -1372,7 +1393,7 @@ function wzGo(i, dir) {
   WZ.i = i;
   document.querySelectorAll('#wz_bar .wz-pill').forEach((b, k) => { b.classList.toggle('cur', k === i); b.classList.toggle('done', k < i); const sv = b.querySelector('svg use'); if (sv) sv.setAttribute('href', '#i-' + (k < i ? 'check' : WZ_STEPS[k][0])); });
   $('wz_fill').style.width = (i / (steps.length - 1) * 100) + '%';
-  $('wz_back').style.visibility = i === 0 ? 'hidden' : 'visible'; $('wz_next').innerHTML = i === steps.length - 1 ? ic('check') + 'Запази хляба' : 'Напред ' + ic('arrow');
+  $('wz_back').style.display = i === 0 ? 'none' : 'flex'; $('wz_next').innerHTML = i === steps.length - 1 ? ic('check') + 'Запази хляба' : 'Напред ' + ic('arrow');
   wzRefresh();
   if (WZ.shown !== 'init') { const el = $('wz_bar'); if (el && $('tab-new').classList.contains('active')) window.scrollTo({top: Math.max(0, el.getBoundingClientRect().top + window.scrollY - 90), behavior: 'smooth'}); }
 }
@@ -1423,11 +1444,12 @@ function buildWizard() {
   // заглавия с въпроси, иконки пред етикетите
   [[s1, 'Какво замесваш?'], [s2, 'Кога и колко дълго?'], [s3, 'Как ще печеш?']].forEach(([st, t]) => { const h = document.createElement('div'); h.className = 'wz-q'; h.textContent = t; st.insertBefore(h, st.firstChild); });
   const labIc = (root, idx, name) => { const l = root.querySelectorAll('label')[idx]; if (l && !l.querySelector('.i')) l.insertAdjacentHTML('afterbegin', ic(name)); };
-  labIc(k[1], 0, 'wheat'); labIc(k[2], 0, 'droplet'); labIc(k[2], 1, 'jar'); labIc(k[2], 2, 'salt'); labIc(k[3], 0, 'jar');
+  labIc(k[1], 0, 'wheat'); k[2].querySelectorAll('label')[1].textContent = 'Квас'; k[2].querySelectorAll('label')[2].textContent = 'Сол'; k[2].querySelectorAll('label')[0].textContent = 'Вода'; labIc(k[2], 0, 'droplet'); labIc(k[2], 1, 'jar'); labIc(k[2], 2, 'salt'); labIc(k[3], 0, 'jar');
   k[6].querySelectorAll('label')[0].textContent = 'Автолиза'; k[6].querySelectorAll('label')[1].textContent = 'Сгъвания'; k[6].querySelectorAll('label')[2].textContent = 'Интервал';
   k[6].querySelectorAll('label')[2].textContent = 'На всеки'; $('new_autolyse').placeholder = '40'; $('new_folds').placeholder = '4'; $('new_foldInt').placeholder = '30';
   ['минути', 'пъти', 'минути'].forEach((u, i) => { const d = document.createElement('div'); d.className = 'wz-pc'; d.style.color = 'var(--muted)'; d.textContent = u; k[6].children[i].appendChild(d); });
-  labIc(k[5], 0, 'play'); labIc(k[6], 0, 'hourglass'); labIc(k[6], 1, 'fold'); labIc(k[6], 2, 'clock'); labIc(k[8], 0, 'snowflake'); labIc(k[9], 0, 'flame'); labIc(k[10], 0, 'lid');
+  k[6].querySelectorAll('label')[2].textContent = 'Интервал';
+  labIc(k[5], 0, 'play'); labIc(k[8], 0, 'snowflake'); labIc(k[9], 0, 'flame'); labIc(k[10], 0, 'lid');
   // лента със стъпки и навигация
   const bar = document.createElement('div'); bar.id = 'wz_bar'; bar.className = 'wz-bar';
   bar.innerHTML = '<i class="wz-line"><i id="wz_fill"></i></i>' + WZ_STEPS.map(([ico, l], i) => `<button type="button" class="wz-pill" data-i="${i}">${ic(ico)}<span>${l}</span></button>`).join('');
