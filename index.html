@@ -601,6 +601,24 @@ html[data-theme=wheat] #tab-new,html[data-theme=wheat] #editModal{--primary:#4F7
 #newBreadForm .flour-row{grid-template-columns:minmax(0,1fr) 96px 40px}
 .wz-q{font:700 17px var(--fd);margin:2px 0 -2px}
 #tab-new .wz-pill.cur .i{box-shadow:0 8px 16px -8px #4F7A3A}
+
+/* v3.6 — като вариант Е: карти, иконки, неплаваща навигация */
+.wz-nav{position:static;bottom:auto;background:none;padding:18px 0 0;margin-top:6px}
+#newBreadForm{padding-bottom:8px}
+.wz-step>.form-group,.wz-step>.three>.form-group,.wz-step>.preview{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 14px}
+.wz-step>.three{gap:8px}
+.wz-step>.three>.form-group{padding:10px 12px}
+.wz-step label{display:flex;align-items:center;gap:7px;font:700 11px var(--fb);color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.wz-step label .i{width:16px;height:16px;color:var(--primary);flex:none}
+.wz-step .three>.form-group>label,.wz-step .label-row{min-height:0}
+.wz-step .three input{font:700 17px var(--fd);padding:10px}
+.wz-q{font:700 18px var(--fd);margin:0 0 2px}
+.wz-methods{grid-template-columns:repeat(3,minmax(0,1fr))}
+.wz-methods .wz-mc{padding:12px 10px}
+.wz-methods .wz-mc small{display:block}
+.wz-pill.done .i{background:var(--primary);color:#fff}
+#newBreadForm #new_waterSeg{display:none}
+#newBreadForm .wz-step .three input{width:100%;box-sizing:border-box;min-width:0}
 </style>
 </head>
 <body>
@@ -1096,7 +1114,7 @@ function showTab(name) {
   if (name === 'diary') renderHistory();
   window.scrollTo(0, 0);
 }
-const APP_VERSION = '3.6.0';
+const APP_VERSION = '3.6.1';
 const userName = () => (localStorage.getItem('hlebIvo_userName') || '').trim();
 function renderGreeting() {
   const h = new Date().getHours(), g = h < 5 ? 'Лека нощ' : h < 11 ? 'Добро утро' : h < 18 ? 'Добър ден' : 'Добър вечер';
@@ -1316,7 +1334,7 @@ function wzGo(i, dir) {
   i = Math.max(0, Math.min(steps.length - 1, i)); dir = dir == null ? (i >= WZ.i ? 1 : -1) : dir;
   steps.forEach((st, k) => { st.hidden = k !== i; st.classList.remove('in-r', 'in-l'); if (k === i) { void st.offsetWidth; st.classList.add(dir > 0 ? 'in-r' : 'in-l'); } });
   WZ.i = i;
-  document.querySelectorAll('#wz_bar .wz-pill').forEach((b, k) => { b.classList.toggle('cur', k === i); b.classList.toggle('done', k < i); });
+  document.querySelectorAll('#wz_bar .wz-pill').forEach((b, k) => { b.classList.toggle('cur', k === i); b.classList.toggle('done', k < i); const sv = b.querySelector('svg use'); if (sv) sv.setAttribute('href', '#i-' + (k < i ? 'check' : WZ_STEPS[k][0])); });
   $('wz_fill').style.width = (i / (steps.length - 1) * 100) + '%';
   $('wz_back').style.visibility = i === 0 ? 'hidden' : 'visible'; $('wz_next').innerHTML = i === steps.length - 1 ? ic('check') + 'Запази хляба' : 'Напред ' + ic('arrow');
   wzRefresh();
@@ -1351,11 +1369,16 @@ function buildWizard() {
   // стъпка 3 — печене
   const mc = document.createElement('div'); mc.id = 'wz_methods'; mc.className = 'wz-methods';
   const mi = {dutch: 'lid', steam: 'droplet', free: 'flame', pan: 'bread', custom: 'edit'};
-  mc.innerHTML = '<div class="wz-lab">Как печеш</div>' + Object.entries(BAKE_PRESETS).map(([key, v]) => `<button type="button" class="wz-mc" data-k="${key}">${ic(mi[key] || 'bread')}<b>${esc(v.label)}</b><small>${v.phases ? esc(v.phases.map(x => x.min + ' мин ' + x.name.toLowerCase()).join(' + ')) : 'сам задаваш'}</small></button>`).join('');
+  mc.innerHTML = '<div class="wz-lab">Как печеш</div>' + Object.entries(BAKE_PRESETS).map(([key, v]) => `<button type="button" class="wz-mc" data-k="${key}">${ic(mi[key] || 'bread')}<b>${esc(({dutch: 'Тенджера', steam: 'С пара', free: 'Без пара', pan: 'Форма', custom: 'Друго'})[key] || v.label)}</b><small>${v.phases ? esc(v.phases.map(x => x.min + ' мин ' + x.name.toLowerCase()).join(' + ')) : 'сам задаваш'}</small></button>`).join('');
   mc.addEventListener('click', ev => { const b = ev.target.closest('.wz-mc'); if (!b) return; $('new_method').value = b.dataset.k; wzRefresh(); });
   k[10].hidden = true; k[11].hidden = true;
   const rvw = document.createElement('div'); rvw.id = 'wz_review'; rvw.className = 'wz-review';
   const s3 = mk([mc, k[10], rvw, k[11]]);
+  // заглавия с въпроси, иконки пред етикетите
+  [[s1, 'Какво замесваш?'], [s2, 'Кога и колко дълго?'], [s3, 'Как ще печеш?']].forEach(([st, t]) => { const h = document.createElement('div'); h.className = 'wz-q'; h.textContent = t; st.insertBefore(h, st.firstChild); });
+  const labIc = (root, idx, name) => { const l = root.querySelectorAll('label')[idx]; if (l && !l.querySelector('.i')) l.insertAdjacentHTML('afterbegin', ic(name)); };
+  labIc(k[1], 0, 'wheat'); labIc(k[2], 0, 'droplet'); labIc(k[2], 1, 'jar'); labIc(k[2], 2, 'salt'); labIc(k[3], 0, 'jar');
+  labIc(k[5], 0, 'play'); labIc(k[6], 0, 'hourglass'); labIc(k[6], 1, 'fold'); labIc(k[6], 2, 'clock'); labIc(k[8], 0, 'snowflake'); labIc(k[9], 0, 'flame'); labIc(k[10], 0, 'lid');
   // лента със стъпки и навигация
   const bar = document.createElement('div'); bar.id = 'wz_bar'; bar.className = 'wz-bar';
   bar.innerHTML = '<i class="wz-line"><i id="wz_fill"></i></i>' + WZ_STEPS.map(([ico, l], i) => `<button type="button" class="wz-pill" data-i="${i}">${ic(ico)}<span>${l}</span></button>`).join('');
