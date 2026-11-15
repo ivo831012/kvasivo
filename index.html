@@ -2,7 +2,7 @@
 <html lang="bg">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#f7f1e8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#15100c" media="(prefers-color-scheme: dark)">
 <title>Самун | Дневник за квасен хляб</title>
@@ -501,6 +501,13 @@ html.noanim .amb,html.noanim .b-hero,html.noanim .hero,html.noanim .logo,html.no
 .pg-item{flex:0 0 100%;min-width:0;scroll-snap-align:center;scroll-snap-stop:always}
 .tab-content.active>.pager{animation:none}
 .b-col{display:grid;grid-auto-rows:1fr;gap:10px}
+/* ===== v3.4: усещане за истинско приложение ===== */
+html{touch-action:manipulation;overscroll-behavior:none;-webkit-text-size-adjust:100%}
+body{overscroll-behavior:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+input,textarea,select,[contenteditable],.sel{-webkit-user-select:text;user-select:text}
+img{-webkit-user-drag:none;user-drag:none}
+button,.nav-btn,.icon-btn{-webkit-tap-highlight-color:transparent}
+button:active:not(:disabled){transition:transform .12s}
 /* кухненски режим */
 html.kitchen{font-size:112.5%;--bg:#0b0807;--surface:#1b1410;--surface-2:#251c15;--text:#fff6ea;--muted:#cdb59f;--primary:#ff9a45;--primary-2:#ffb870;--accent:#ffb347;--on-primary:#1f0e03;--line:#3d3024;--chip:#2c2218;--hero-1:#3a2210;--hero-2:#64360f}
 html.kitchen .btn-primary{padding:20px 18px;font-size:1.15rem}
@@ -637,12 +644,12 @@ html.kitchen .nav-btn{font-size:.72rem}
       </div>
       <div class="np-panel" id="np_plan" hidden>
         <div class="np-title"><i data-ic="target"></i>Планиране отзад-напред</div>
-      <p class="muted" style="margin-top:0">Кажи кога искаш да печеш — ще изчисля кога да замесиш и да прибереш в хладилника.</p>
+      <p class="muted" style="margin-top:0">Кажи кога искаш да печеш — ще изчисля кога да замесиш и да започнеш ретардацията.</p>
       <div class="form-grid">
         <div class="form-group"><label>Искам да извадя и пека на</label><input type="datetime-local" id="plan_target"></div>
         <div class="two">
-          <div class="form-group"><label>Плот (часа)</label><input type="number" id="plan_counter" step="0.5" inputmode="decimal"></div>
-          <div class="form-group"><label>Хладилник (часа)</label><input type="number" id="plan_fridge" step="0.5" inputmode="decimal"></div>
+          <div class="form-group"><label>Насипна (часа)</label><input type="number" id="plan_counter" step="0.5" inputmode="decimal"></div>
+          <div class="form-group"><label>Ретардация (часа)</label><input type="number" id="plan_fridge" step="0.5" inputmode="decimal"></div>
         </div>
       </div>
       <div class="btn-row"><button type="button" class="btn-soft" onclick="planCalc()"><i data-ic="sparkles"></i>Изчисли графика</button></div>
@@ -675,9 +682,9 @@ html.kitchen .nav-btn{font-size:.72rem}
           </div>
           <div class="form-group"><label>Допълнителни стъпки</label><div id="new_steps"></div><div class="tagrow" id="new_stepPresets"></div>
             <div class="muted">Напр. ламиниране — получаваш известие в точния момент.</div></div>
-          <div class="form-group"><label>В хладилник (планирано)</label>
+          <div class="form-group"><label>Начало на ретардацията (в хладилник)</label>
             <div class="time-row"><input type="date" id="new_fridgeDate"><input type="time" id="new_fridgeTime"></div></div>
-          <div class="form-group"><label>Изваждане от хладилник (планирано)</label>
+          <div class="form-group"><label>Край на ретардацията (изваждане)</label>
             <div class="time-row"><input type="date" id="new_bakeDate"><input type="time" id="new_bakeTime"></div></div>
 
           <div class="form-group"><label>Начин на печене</label><select id="new_method"></select></div>
@@ -716,7 +723,7 @@ html.kitchen .nav-btn{font-size:.72rem}
     </div>
 
     <div class="card"><h2><i data-ic="thermo"></i>Температура и време</h2>
-      <div class="muted">Колко да ферментира на плота според температурата в кухнята.</div>
+      <div class="muted">Колко да е насипната ферментация според температурата в кухнята.</div>
       <div class="three">
         <div class="form-group"><label>Кухня °C</label><input type="number" id="t_room" value="24" inputmode="decimal"></div>
         <div class="form-group"><label>Квас %</label><input type="number" id="t_st" value="20" inputmode="decimal"></div>
@@ -853,8 +860,8 @@ html.kitchen .nav-btn{font-size:.72rem}
         <h3 class="sec"><i data-ic="clock"></i>Времеви цикъл</h3>
         <div class="form-group"><label>Температура в кухнята (°C)</label><input type="number" id="edit_roomTemp" inputmode="decimal" placeholder="напр. 23"></div>
         <div class="form-group"><label>Замесване</label><div class="time-row"><input type="date" id="edit_startDate" required><input type="time" id="edit_startTime" required></div></div>
-        <div class="form-group"><label>В хладилник</label><div class="time-row"><input type="date" id="edit_fridgeDate"><input type="time" id="edit_fridgeTime"></div></div>
-        <div class="form-group"><label>Изваден от хладилник</label><div class="time-row"><input type="date" id="edit_bakeDate"><input type="time" id="edit_bakeTime"></div></div>
+        <div class="form-group"><label>Начало на ретардацията</label><div class="time-row"><input type="date" id="edit_fridgeDate"><input type="time" id="edit_fridgeTime"></div></div>
+        <div class="form-group"><label>Край на ретардацията</label><div class="time-row"><input type="date" id="edit_bakeDate"><input type="time" id="edit_bakeTime"></div></div>
         <div class="form-group"><label>Във фурната</label><div class="time-row"><input type="date" id="edit_ovenDate"><input type="time" id="edit_ovenTime"></div></div>
 
         <h3 class="sec"><i data-ic="flame"></i>Печене</h3>
@@ -990,6 +997,7 @@ function toast(msg, opt) {
 /* ============ Модали ============ */
 function openModal(id) { $(id).classList.add('open'); }
 function closeModal(id) { $(id).classList.remove('open'); }
+document.addEventListener('pointerdown', ev => { const b = ev.target.closest && ev.target.closest('button,.nav-btn'); if (b && !b.disabled && navigator.vibrate) { try { navigator.vibrate(b.classList.contains('btn-primary') || b.classList.contains('b-btn') || b.classList.contains('nav-fab') ? 14 : 7); } catch (x) {} } }, {passive: true});
 document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', ev => { if (ev.target === o) o.classList.remove('open'); }));
 document.addEventListener('keydown', ev => { if (ev.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(o => o.classList.remove('open')); });
 
@@ -1004,7 +1012,7 @@ function showTab(name) {
   if (name === 'diary') renderHistory();
   window.scrollTo(0, 0);
 }
-const APP_VERSION = '3.3.1';
+const APP_VERSION = '3.4.0';
 const userName = () => (localStorage.getItem('hlebIvo_userName') || '').trim();
 function renderGreeting() {
   const h = new Date().getHours(), g = h < 5 ? 'Лека нощ' : h < 11 ? 'Добро утро' : h < 18 ? 'Добър ден' : 'Добър вечер';
@@ -1153,7 +1161,7 @@ function planCalc() {
   const c = parseFloat($('plan_counter').value) || 4, f = parseFloat($('plan_fridge').value) || 12;
   const fridgeT = target - f * 3600000, startT = fridgeT - c * 3600000;
   setDT('new_start', startT); setDT('new_fridge', fridgeT); setDT('new_bake', target);
-  $('planResult').innerHTML = `<b>Замес:</b> ${fmtDT(startT)}<br><b>В хладилника:</b> ${fmtDT(fridgeT)}<br><b>Извади и пеки:</b> ${fmtDT(target)}` +
+  $('planResult').innerHTML = `<b>Замес:</b> ${fmtDT(startT)}<br><b>Ретардация от:</b> ${fmtDT(fridgeT)}<br><b>Извади и пеки:</b> ${fmtDT(target)}` +
     (startT < Date.now() ? '<br><b style="color:var(--danger)">Времето за замес вече е минало — намали часовете.</b>' : '') +
     '<br><span class="muted">Попълних датите във формата по-долу.</span>';
 }
@@ -1243,8 +1251,8 @@ function eventsOf(e) {
   const ev = [], st = ts(e.startDateTime), al = parseInt(e.autolyse, 10);
   if (st && al > 0) ev.push({key: 'autolyse', t: st + al * 60000, icon: '⏱️', ico: 'hourglass', label: 'Край на автолизата — добави квас и сол'});
   if (st) (Array.isArray(e.steps) ? e.steps : []).forEach(x => { if (!x.done) ev.push({key: 'step' + x.id, t: st + (+x.off || 0) * 60000, icon: '📌', ico: 'layers', label: x.name}); });
-  if (ts(e.fridgeDateTime)) ev.push({key: 'fridge', t: ts(e.fridgeDateTime), icon: '❄️', ico: 'snowflake', label: 'Време е за хладилника'});
-  if (ts(e.bakeDateTime)) ev.push({key: 'bake', t: ts(e.bakeDateTime), icon: '🔥', ico: 'flame', label: 'Извади от хладилника и загрей фурната'});
+  if (ts(e.fridgeDateTime)) ev.push({key: 'fridge', t: ts(e.fridgeDateTime), icon: '❄️', ico: 'snowflake', label: 'Време е за ретардация (в хладилник)'});
+  if (ts(e.bakeDateTime)) ev.push({key: 'bake', t: ts(e.bakeDateTime), icon: '🔥', ico: 'flame', label: 'Край на ретардацията — загрей фурната'});
   const nfo = nextFold(e, Date.now());
   if (nfo) ev.push({key: 'fold' + nfo.n, t: nfo.t, icon: '🔄', ico: 'fold', label: `Сгъване ${nfo.n} от ${nfo.of}`});
   const ov = ts(e.ovenDateTime);
@@ -1263,11 +1271,11 @@ function getStage(e, now) {
     return {i: 3, label: 'Готов', ico: 'check'};
   }
   if (bk && now >= bk) return {i: 2, label: 'Готов за печене', ico: 'flame'};
-  if (fr && now >= fr) return {i: 1, label: 'В хладилника', ico: 'snowflake'};
+  if (fr && now >= fr) return {i: 1, label: 'Ретардация', ico: 'snowflake'};
   if (st && now < st) return {i: -1, label: 'Планиран', ico: 'calendar'};
   const al = parseInt(e.autolyse, 10);
   if (st && al > 0 && now < st + al * 60000) return {i: 0, label: 'Автолиза', ico: 'hourglass'};
-  return {i: 0, label: 'Ферментация', ico: 'wheat'};
+  return {i: 0, label: 'Насипна ферментация', ico: 'wheat'};
 }
 function nextEvent(e, now) { return eventsOf(e).filter(x => x.t > now).sort((a, b) => a.t - b.t)[0] || null; }
 function isActive(e) {
@@ -1345,7 +1353,7 @@ function bentoCard(c) {
     ${(stg.i === 1 || (stg.i === 2 && !ov(e))) ? `<div class="b-tile b-wide dk">${readyPanel(e, 'b')}</div>` : ''}
     ${bakeInfo ? `<div class="b-wide b-bake">${bakeInfo}</div>` : ''}
     ${main ? `<div class="b-wide b-main">${main.replace('btn-primary', 'b-btn big')}</div>` : ''}
-    <div class="b-wide btn-row b-more">${stg.i === 0 ? btn('flame', 'Без хладилник → печене', `quick('${e.id}','skip')`) : ''}${btn('edit', 'Редакция', `openEdit('${e.id}')`)}${btn('calendar', 'Календар', `exportICS('${e.id}')`)}${btn('eyeoff', 'Скрий', `hideActive('${e.id}')`)}</div>
+    <div class="b-wide btn-row b-more">${stg.i === 0 ? btn('flame', 'Без ретардация → печене', `quick('${e.id}','skip')`) : ''}${btn('edit', 'Редакция', `openEdit('${e.id}')`)}${btn('calendar', 'Календар', `exportICS('${e.id}')`)}${btn('eyeoff', 'Скрий', `hideActive('${e.id}')`)}</div>
   </div>`;
 }
 const ov = e => ts(e.ovenDateTime);
@@ -1358,8 +1366,8 @@ function activeCard(e, now) {
 
   let timer = '';
   if (stg.i === -1) timer = `Започва след <b data-until="${st}"></b>`;
-  else if (stg.i === 0) timer = `На плота вече <b data-since="${st}"></b>`;
-  else if (stg.i === 1) timer = `В хладилника вече <b data-since="${fr}"></b>`;
+  else if (stg.i === 0) timer = `В насипна ферментация вече <b data-since="${st}"></b>`;
+  else if (stg.i === 1) timer = `В ретардация вече <b data-since="${fr}"></b>`;
   else if (stg.i === 2 && ov) timer = `Във фурната вече <b data-since="${ov}"></b>`;
   else if (stg.i === 2 && bk) timer = `Извадено преди <b data-since="${bk}"></b>`;
 
@@ -1368,7 +1376,7 @@ function activeCard(e, now) {
   else if (stg.i === 3) { center = ic('check'); cap = 'Готов'; ringAttr = 'data-full="1"'; }
   else { center = `<span data-since="${from}"></span>`; cap = 'от последната стъпка'; ringAttr = 'data-full="1"'; }
 
-  const steps = [['wheat', 'Плот'], ['snowflake', 'Хладилник'], ['flame', 'Печене'], ['check', 'Готов']], fin = stg.i === 3;
+  const steps = [['wheat', 'Насипна'], ['snowflake', 'Ретардация'], ['flame', 'Печене'], ['check', 'Готов']], fin = stg.i === 3;
   const stepper = steps.map((s, i) => {
     const done = i < stg.i || fin, cur = i === stg.i && !fin;
     return `<div class="step ${done ? 'done' : ''} ${cur ? 'cur' : ''}"><div class="dot">${ic(done ? 'check' : s[0])}</div>${s[1]}</div>`;
@@ -1377,8 +1385,8 @@ function activeCard(e, now) {
   const btn = (ico, txt, fn, primary) => `<button type="button" class="${primary ? 'btn-primary' : 'btn-soft'}" onclick="${fn}">${ic(ico)}${txt}</button>`;
   let main = '';
   if (stg.i === -1) main = btn('play', 'Започнах замеса сега', `quick('${e.id}','start')`, 1);
-  else if (stg.i === 0) main = btn('snowflake', 'Сложих в хладилника', `quick('${e.id}','fridge')`, 1);
-  else if (stg.i === 1) main = btn('flame', 'Извадих от хладилника', `quick('${e.id}','bake')`, 1);
+  else if (stg.i === 0) main = btn('snowflake', 'Започнах ретардация', `quick('${e.id}','fridge')`, 1);
+  else if (stg.i === 1) main = btn('flame', 'Край на ретардацията', `quick('${e.id}','bake')`, 1);
   else if (stg.i === 2 && !ov) main = btn('bread', 'Сложих във фурната', `quick('${e.id}','oven')`, 1);
   else if (stg.i === 3) main = btn('star', 'Оцени хляба', `openEdit('${e.id}')`, 1);
 
@@ -1413,13 +1421,13 @@ function activeCard(e, now) {
     </div>
     <div class="btn-row">${main}</div>
     <div class="btn-row">
-      ${stg.i === 0 ? btn('flame', 'Без хладилник → печене', `quick('${e.id}','skip')`) : ''}${btn('edit', 'Редакция', `openEdit('${e.id}')`)}${btn('calendar', 'Календар', `exportICS('${e.id}')`)}${btn('eyeoff', 'Скрий', `hideActive('${e.id}')`)}
+      ${stg.i === 0 ? btn('flame', 'Без ретардация → печене', `quick('${e.id}','skip')`) : ''}${btn('edit', 'Редакция', `openEdit('${e.id}')`)}${btn('calendar', 'Календар', `exportICS('${e.id}')`)}${btn('eyeoff', 'Скрий', `hideActive('${e.id}')`)}
     </div>
   </div>`;
 }
 function quick(id, key) {
   const e = byId(id); if (!e) return;
-  if (key === 'skip') { e.fridgeDateTime = ''; e.bakeDateTime = localISO(new Date()); persist(); renderAll(); toast('Пропуснахме хладилника — готово за печене', {icon: 'flame'}); return; }
+  if (key === 'skip') { e.fridgeDateTime = ''; e.bakeDateTime = localISO(new Date()); persist(); renderAll(); toast('Пропуснахме ретардацията — готово за печене', {icon: 'flame'}); return; }
   const map = {start: 'startDateTime', fridge: 'fridgeDateTime', bake: 'bakeDateTime', oven: 'ovenDateTime'};
   e[map[key]] = localISO(new Date());
   const evKey = {fridge: 'fridge', bake: 'bake'}[key];
@@ -1499,6 +1507,16 @@ async function nativeSetup(ask) {
     return ok;
   } catch (err) { if (ask) toast('Известията не се получиха', {icon: 'alert', warn: true}); return false; }
 }
+const SB = NATIVE ? plug('StatusBar') : null;
+function nativeChrome() {
+  if (!SB) return;
+  try {
+    const bg = (getComputedStyle(document.documentElement).getPropertyValue('--bg') || '#f7f1e8').trim();
+    const dark = document.documentElement.classList.contains('kitchen') || (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
+    SB.setOverlaysWebView({overlay: false}); SB.setBackgroundColor({color: bg}); SB.setStyle({style: dark ? 'DARK' : 'LIGHT'});
+  } catch (err) {}
+}
+if (NATIVE && window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => setTimeout(nativeChrome, 50));
 async function nativeStatus() {
   if (!LN) { toast('Родните известия не са налични (отворено в браузър?)', {icon: 'alert', warn: true, ms: 6000}); return; }
   try {
@@ -1633,8 +1651,8 @@ function histCard(e, idx) {
       ${m.hydr != null ? `<span class="chip blue">${ic('droplet')}Хидр. ${pct(m.hydr)}</span>` : ''}
       ${m.starterPct != null ? `<span class="chip">${ic('jar')}Квас ${pct(m.starterPct)}</span>` : ''}
       ${m.saltPct != null ? `<span class="chip">${ic('salt')}Сол ${pct(m.saltPct)}</span>` : ''}
-      ${c ? `<span class="chip blue">${ic('wheat')}Плот ${fmtH(c)}</span>` : ''}
-      ${f ? `<span class="chip indigo">${ic('snowflake')}Хлад. ${fmtH(f)}</span>` : ''}
+      ${c ? `<span class="chip blue">${ic('wheat')}Насипна ${fmtH(c)}</span>` : ''}
+      ${f ? `<span class="chip indigo">${ic('snowflake')}Ретардация ${fmtH(f)}</span>` : ''}
       ${e.done && !r ? `<span class="chip">${ic('eyeoff')}Скрит от „Сега“</span>` : ''}
       ${(e.tags || []).map(t => `<span class="chip">${ic('tag')}${esc(t)}</span>`).join('')}
     </div>
@@ -1824,8 +1842,8 @@ function renderStats() {
   if (rated.length >= 4 && top.length && rest.length) {
     const a = avgTimes(top), b = avgTimes(rest);
     const ha = avg(top.map(e => metrics(e).hydr).filter(v => v != null)), hb = avg(rest.map(e => metrics(e).hydr).filter(v => v != null));
-    insight = `<div class="insight"><b>Оценка 8+</b> (${top.length} хляба): плот ${fmtH(a.counter)}, хладилник ${fmtH(a.fridge)}, хидратация ${pct(ha)}.</div>
-      <div class="insight"><b>Останалите</b> (${rest.length}): плот ${fmtH(b.counter)}, хладилник ${fmtH(b.fridge)}, хидратация ${pct(hb)}.</div>
+    insight = `<div class="insight"><b>Оценка 8+</b> (${top.length} хляба): насипна ${fmtH(a.counter)}, ретардация ${fmtH(a.fridge)}, хидратация ${pct(ha)}.</div>
+      <div class="insight"><b>Останалите</b> (${rest.length}): насипна ${fmtH(b.counter)}, ретардация ${fmtH(b.fridge)}, хидратация ${pct(hb)}.</div>
       <div class="muted">Това е сравнение на средни стойности при малка извадка — показва тенденция, не причина.</div>`;
   } else insight = '<div class="muted">След 4+ оценени хляба (поне един с 8+) ще сравня какво е различното при най-добрите.</div>';
   box.innerHTML = `
@@ -1988,14 +2006,14 @@ function renderTemp() {
   const T = parseFloat($('t_room').value), base = parseFloat($('t_base').value), st = parseFloat($('t_st').value) || 20, box = $('tempOut');
   if (!(T > 0) || !(base > 0)) { box.innerHTML = '<span class="muted">Въведи температура и базово време.</span>'; return; }
   const h = tempHours(T, base, st);
-  box.innerHTML = `<div class="big-res">${fmtHM(h)}<small>на плота при ${T}°C (±15%: ${fmtHM(h * .85)} – ${fmtHM(h * 1.15)})</small></div>` +
+  box.innerHTML = `<div class="big-res">${fmtHM(h)}<small>насипна ферментация при ${T}°C (±15%: ${fmtHM(h * .85)} – ${fmtHM(h * 1.15)})</small></div>` +
     `<div class="tbl">` + [18, 20, 22, 24, 26, 28, 30].map(t => `<div class="${t === Math.round(T) ? 'on' : ''}"><b>${t}°</b>${fmtHM(tempHours(t, base, st))}</div>`).join('') + `</div>` +
     `<div class="muted" style="margin-top:8px">Груба оценка: ~2× по-бързо на всеки 7°C по-топло и по-бързо при повече квас. Винаги гледай тестото — обем, мехурчета, еластичност.</div>`;
 }
 function tempToPlan() {
   const T = parseFloat($('t_room').value), base = parseFloat($('t_base').value), st = parseFloat($('t_st').value) || 20;
   if (!(T > 0) || !(base > 0)) return;
-  showTab('new'); $('plan_counter').value = half(tempHours(T, base, st)); toast(`В планера: ${$('plan_counter').value} ч на плота`, {icon: 'check'});
+  showTab('new'); $('plan_counter').value = half(tempHours(T, base, st)); toast(`В планера: ${$('plan_counter').value} ч насипна ферментация`, {icon: 'check'});
 }
 
 /* ---------- Журнал на кваса ---------- */
@@ -2159,7 +2177,7 @@ function openCompare(a, b) {
     ['Брашно', e => esc(e.flour || '-')], ['Вода', e => e.water ? esc(e.water) + ' г' : '-'],
     ['Хидратация', e => pct(metrics(e).hydr)], ['Квас', e => pct(metrics(e).starterPct)], ['Сол', e => pct(metrics(e).saltPct)],
     ['Автолиза', e => e.autolyse ? esc(e.autolyse) + ' мин' : '-'], ['Сгъвания', e => e.folds ? (foldLog(e).length ? foldLog(e).length + '/' : '') + esc(e.folds) : '-'],
-    ['Плот', e => h(e, x => hoursBetween(x.startDateTime, x.fridgeDateTime))], ['Хладилник', e => h(e, x => hoursBetween(x.fridgeDateTime, x.bakeDateTime))],
+    ['Насипна ферм.', e => h(e, x => hoursBetween(x.startDateTime, x.fridgeDateTime))], ['Ретардация', e => h(e, x => hoursBetween(x.fridgeDateTime, x.bakeDateTime))],
     ['Фурна', oven], ['Печене', e => esc(bakeSummary(e))], ['Стъпки', e => (e.steps || []).map(x => esc(x.name)).join(', ') || '-'],
     ['Кухня', e => e.roomTemp ? esc(e.roomTemp) + '°C' : '-'], ['Етикети', e => (e.tags || []).map(t => '#' + esc(t)).join(' ') || '-']
   ];
@@ -2179,7 +2197,7 @@ function adviceHtml() {
   const rated = breadHistory.filter(e => +e.rating > 0); if (rated.length < 4) return '';
   const avg = a => a.reduce((x, y) => x + y, 0) / a.length, out = [];
   [['Хидратация', e => metrics(e).hydr, '%'], ['Квас', e => metrics(e).starterPct, '%'], ['Сол', e => metrics(e).saltPct, '%'],
-   ['Плот', e => hoursBetween(e.startDateTime, e.fridgeDateTime), ' ч'], ['Хладилник', e => hoursBetween(e.fridgeDateTime, e.bakeDateTime), ' ч'],
+   ['Насипна ферм.', e => hoursBetween(e.startDateTime, e.fridgeDateTime), ' ч'], ['Ретардация', e => hoursBetween(e.fridgeDateTime, e.bakeDateTime), ' ч'],
    ['Фурна', e => +e.ovenTemp || null, '°C']].forEach(([name, fn, u]) => {
     const pts = rated.map(e => [fn(e), +e.rating]).filter(p => p[0] != null && isFinite(p[0])); if (pts.length < 4) return;
     const top = pts.filter(p => p[1] >= 8), rest = pts.filter(p => p[1] < 8), r = pearson(pts); if (!top.length) return;
@@ -2213,31 +2231,82 @@ function wrapText(g, text, x, y, maxW, lh, maxLines) {
   while (g.measureText(line).width > maxW && line.length > 1) line = line.slice(0, -2) + '…';
   g.fillText(line, x, y); return y + lh;
 }
+function drawSym(g, id, x, y, size, color, lw) {
+  const sym = document.getElementById('i-' + id); if (!sym) return;
+  g.save(); g.translate(x, y); g.scale(size / 24, size / 24); g.strokeStyle = color; g.lineWidth = lw || 1.8; g.lineCap = 'round'; g.lineJoin = 'round';
+  [...sym.children].forEach(n => {
+    const t = n.tagName.toLowerCase(), a = k => parseFloat(n.getAttribute(k));
+    if (t === 'path') g.stroke(new Path2D(n.getAttribute('d')));
+    else if (t === 'circle') { g.beginPath(); g.arc(a('cx'), a('cy'), a('r'), 0, 7); g.stroke(); }
+    else if (t === 'rect') { g.beginPath(); rrect(g, a('x'), a('y'), a('width'), a('height'), a('rx') || 0); g.stroke(); }
+    else if (t === 'line') { g.beginPath(); g.moveTo(a('x1'), a('y1')); g.lineTo(a('x2'), a('y2')); g.stroke(); }
+  });
+  g.restore();
+}
 async function shareBread(id) {
   const e = byId(id); if (!e) return;
-  const W = 1080, H = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = H; const g = cv.getContext('2d');
+  const W = 1080, H = 1800, cv = document.createElement('canvas'); cv.width = W; cv.height = H; const g = cv.getContext('2d');
   try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (x) {}
-  const serif = "'Playfair Display',Georgia,serif", sans = "'Plus Jakarta Sans',system-ui,sans-serif";
+  const disp = "'Unbounded','Manrope',system-ui,sans-serif", sans = "'Manrope',system-ui,sans-serif";
   const bg = g.createLinearGradient(0, 0, W, H); bg.addColorStop(0, '#fbf3e6'); bg.addColorStop(1, '#f1d9b5'); g.fillStyle = bg; g.fillRect(0, 0, W, H);
-  g.save(); rrect(g, 60, 60, 960, 660, 44); g.clip();
+  g.save(); rrect(g, 60, 60, 960, 540, 48); g.clip();
   const ph = photosOf(e)[0]; let drawn = false;
-  if (ph) { try { const im = await loadImg(ph), s = Math.max(960 / im.width, 660 / im.height), w = im.width * s, h = im.height * s; g.drawImage(im, 60 + (960 - w) / 2, 60 + (660 - h) / 2, w, h); drawn = true; } catch (x) {} }
-  if (!drawn) { const pg = g.createLinearGradient(60, 60, 1020, 720); pg.addColorStop(0, '#f7b24f'); pg.addColorStop(1, '#b9460a'); g.fillStyle = pg; g.fillRect(60, 60, 960, 660); g.font = '300px serif'; g.textAlign = 'center'; g.fillText('🍞', 540, 470); g.textAlign = 'left'; }
+  if (ph) { try { const im = await loadImg(ph), sc = Math.max(960 / im.width, 540 / im.height), w = im.width * sc, h = im.height * sc; g.drawImage(im, 60 + (960 - w) / 2, 60 + (540 - h) / 2, w, h); drawn = true; } catch (x) {} }
+  if (!drawn) { const pg = g.createLinearGradient(60, 60, 1020, 600); pg.addColorStop(0, '#f7b24f'); pg.addColorStop(1, '#b9460a'); g.fillStyle = pg; g.fillRect(60, 60, 960, 540); drawSym(g, 'bread', 390, 170, 300, '#fffbf2', 1.1); }
   g.restore();
   const r = +e.rating;
-  if (r > 0) { g.fillStyle = '#c4570f'; g.beginPath(); g.arc(900, 180, 84, 0, 7); g.fill(); g.fillStyle = '#fff'; g.textAlign = 'center'; g.font = `700 70px ${serif}`; g.fillText(String(r), 900, 192); g.font = `700 26px ${sans}`; g.fillText('/10', 900, 228); g.textAlign = 'left'; }
-  g.fillStyle = '#2b2119'; g.font = `700 68px ${serif}`;
-  let y = wrapText(g, breadName(e), 70, 815, 940, 80, 2);
-  const m = metrics(e), boxes = [['Хидратация', pct(m.hydr)], ['Квас', pct(m.starterPct)], ['Сол', pct(m.saltPct)]], bw = 300;
-  boxes.forEach(([l, v], i) => { const x = 70 + i * (bw + 20); g.fillStyle = 'rgba(196,87,15,.12)'; rrect(g, x, y + 10, bw, 140, 28); g.fill(); g.fillStyle = '#c4570f'; g.font = `800 52px ${sans}`; g.fillText(v, x + 26, y + 85); g.fillStyle = '#7a6552'; g.font = `700 26px ${sans}`; g.fillText(l.toUpperCase(), x + 26, y + 128); });
-  y += 215; g.fillStyle = '#2b2119'; g.font = `600 34px ${sans}`;
-  y = wrapText(g, e.flour || '', 70, y, 940, 44, 2);
+  if (r > 0) { g.fillStyle = '#c4570f'; g.beginPath(); g.arc(900, 180, 84, 0, 7); g.fill(); g.fillStyle = '#fff'; g.textAlign = 'center'; g.font = `800 62px ${disp}`; g.fillText(String(r), 900, 200); g.font = `800 24px ${sans}`; g.fillText('/10', 900, 236); g.textAlign = 'left'; }
+  g.fillStyle = '#2b2119'; g.font = `700 52px ${disp}`;
+  let y = wrapText(g, breadName(e), 70, 690, 940, 62, 2);
+  const st0 = ts(e.startDateTime); g.fillStyle = '#7a6552'; g.font = `700 28px ${sans}`;
+  if (st0) g.fillText(new Date(st0).toLocaleDateString('bg-BG', {day: 'numeric', month: 'long', year: 'numeric'}), 70, y - 6);
+  y += 26;
+  const m = metrics(e), chip = (txt, x, bgc, fg) => { g.font = `800 30px ${sans}`; const w = g.measureText(txt).width + 44; g.fillStyle = bgc; rrect(g, x, y, w, 58, 29); g.fill(); g.fillStyle = fg; g.fillText(txt, x + 22, y + 39); return x + w + 14; };
+  let cx = 70; if (m.hydr != null) cx = chip('Хидр. ' + pct(m.hydr), cx, '#e6f1fb', '#1b78b8'); if (m.starterPct != null) cx = chip('Квас ' + pct(m.starterPct), cx, 'rgba(196,87,15,.13)', '#9a430c'); if (m.saltPct != null) chip('Сол ' + pct(m.saltPct), cx, 'rgba(196,87,15,.13)', '#9a430c');
+  y += 86;
+  const flourTotal = m.flour || 0;
+  const folds = foldTarget(e), done = foldLog(e).length;
+  const tiles = [['droplet', 'Вода', e.water ? e.water + 'г' : '—'], ['jar', 'Квас', e.starter ? e.starter + 'г' : '—'], ['salt', 'Сол', e.salt ? e.salt + 'г' : '—'],
+    ['hourglass', 'Автолиза', parseInt(e.autolyse, 10) > 0 ? e.autolyse + ' мин' : '—'], ['fold', 'Сгъвания', folds ? (done ? done + '/' + folds : String(folds)) : '—'], ['wheat', 'Брашно', flourTotal ? Math.round(flourTotal) + 'г' : '—']];
+  const tw = 300, th = 176;
+  tiles.forEach(([ic2, lab, val], i) => {
+    const tx = 70 + (i % 3) * (tw + 20), ty = y + Math.floor(i / 3) * (th + 18);
+    g.fillStyle = 'rgba(255,255,255,.72)'; rrect(g, tx, ty, tw, th, 34); g.fill(); g.strokeStyle = 'rgba(122,101,82,.22)'; g.lineWidth = 2.5; rrect(g, tx, ty, tw, th, 34); g.stroke();
+    drawSym(g, ic2, tx + tw / 2 - 20, ty + 22, 40, '#c4570f', 1.8);
+    g.textAlign = 'center'; g.fillStyle = '#7a6552'; g.font = `700 27px ${sans}`; g.fillText(lab, tx + tw / 2, ty + 106);
+    g.fillStyle = '#2b2119'; g.font = `800 38px ${sans}`; g.fillText(val, tx + tw / 2, ty + 152); g.textAlign = 'left';
+  });
+  y += 2 * (th + 18) + 18;
+  // процес: насипна ферментация · ретардация
   const c = hoursBetween(e.startDateTime, e.fridgeDateTime), f = hoursBetween(e.fridgeDateTime, e.bakeDateTime);
-  const meta = [c ? `плот ${fmtH(c)}` : '', f ? `хладилник ${fmtH(f)}` : '', e.ovenTemp ? e.ovenTemp + '°C' : '', e.vessel || ''].filter(Boolean).join(' · ');
-  if (meta) { g.fillStyle = '#7a6552'; g.font = `600 30px ${sans}`; g.fillText(meta, 70, y + 4); y += 48; }
-  if ((e.tags || []).length) { g.fillStyle = '#c4570f'; g.font = `700 30px ${sans}`; g.fillText((e.tags || []).map(t => '#' + t).join('  ').slice(0, 60), 70, y + 4); }
-  g.fillStyle = '#c4570f'; g.font = `italic 700 44px ${serif}`; g.fillText('Самун', 70, 1292);
-  g.fillStyle = '#7a6552'; g.font = `600 28px ${sans}`; g.textAlign = 'right'; g.fillText(new Date(ts(e.startDateTime) || Date.now()).toLocaleDateString('bg-BG', {day: 'numeric', month: 'long', year: 'numeric'}), 1010, 1290); g.textAlign = 'left';
+  const procs = []; if (c) procs.push(['wheat', 'Насипна ферментация', fmtH(c)]); if (f) procs.push(['snowflake', 'Ретардация', fmtH(f)]);
+  if (procs.length) {
+    const pw = (940 - 20 * (procs.length - 1)) / procs.length;
+    procs.forEach(([ic2, lab, val], i) => {
+      const px = 70 + i * (pw + 20); g.fillStyle = 'rgba(255,255,255,.72)'; rrect(g, px, y, pw, 110, 30); g.fill();
+      drawSym(g, ic2, px + 26, y + 33, 44, (ic2 === 'snowflake' ? '#4f46c8' : '#c4570f'), 1.8);
+      g.fillStyle = '#7a6552'; g.font = `700 24px ${sans}`; g.fillText(lab, px + 86, y + 44); g.fillStyle = '#2b2119'; g.font = `800 36px ${sans}`; g.fillText(val, px + 86, y + 86);
+    });
+    y += 128;
+  }
+  // печене: фази с пара / без пара
+  const ph2 = bakePhases(e);
+  if (ph2.length) {
+    const bh = 150; g.fillStyle = 'rgba(43,33,25,.9)'; rrect(g, 70, y, 940, bh, 34); g.fill();
+    const pw = (940 - 40) / ph2.length;
+    ph2.forEach((p2, i) => {
+      const px = 90 + i * pw, ico = p2.k === 'lid' ? 'lid' : p2.k === 'steam' ? 'droplet' : 'flame';
+      drawSym(g, ico, px + 6, y + 30, 46, '#f0a43a', 1.8);
+      g.fillStyle = '#fff6ea'; g.font = `800 30px ${sans}`; g.fillText(p2.name, px + 68, y + 58);
+      g.fillStyle = '#f0c78a'; g.font = `700 28px ${sans}`; g.fillText(`${p2.min} мин${p2.temp ? ' · ' + p2.temp + '°C' : ''}`, px + 68, y + 98);
+      if (i < ph2.length - 1) { g.strokeStyle = '#f0a43a'; g.lineWidth = 4; g.lineCap = 'round'; g.beginPath(); g.moveTo(px + pw - 40, y + 76); g.lineTo(px + pw - 14, y + 76); g.moveTo(px + pw - 26, y + 64); g.lineTo(px + pw - 14, y + 76); g.lineTo(px + pw - 26, y + 88); g.stroke(); }
+    });
+    y += bh + 22;
+  }
+  if (e.flour) { g.fillStyle = '#2b2119'; g.font = `600 28px ${sans}`; y = wrapText(g, e.flour, 70, y + 18, 940, 36, 2); }
+  if ((e.tags || []).length) { g.fillStyle = '#c4570f'; g.font = `700 30px ${sans}`; g.fillText((e.tags || []).map(t => '#' + t).join('  ').slice(0, 60), 70, y + 16); }
+  g.fillStyle = '#c4570f'; g.font = `700 40px ${disp}`; g.fillText('Самун', 70, H - 52);
+  g.fillStyle = '#7a6552'; g.font = `600 26px ${sans}`; g.textAlign = 'right'; g.fillText('квасен хляб · дневник', 1010, H - 56); g.textAlign = 'left';
   cv.toBlob(async blob => {
     if (!blob) { toast('Не успях да направя картичката', {icon: 'alert', warn: true}); return; }
     const file = new File([blob], 'Samun_' + (e.name || 'hlyab').replace(/[^\wа-яА-Я-]+/g, '_') + '.png', {type: 'image/png'});
@@ -2250,7 +2319,7 @@ async function shareBread(id) {
 
 /* ---------- Кухненски режим ---------- */
 function applyKitchen(on) { document.documentElement.classList.toggle('kitchen', on); $('kitchenBtn').classList.toggle('on', on); }
-function toggleKitchen() {
+function toggleKitchen() { setTimeout(nativeChrome, 60);
   const on = !document.documentElement.classList.contains('kitchen'); applyKitchen(on); try { localStorage.setItem('hlebIvo_kitchen', on ? '1' : '0'); } catch (e) {}
   if (on) keepAwake(); toast(on ? 'Кухненски режим: тъмно, едри бутони, екранът не угасва' : 'Кухненският режим е изключен', {icon: 'moon'});
 }
@@ -2422,7 +2491,7 @@ const starterStripHtml = () => `<div class="card strip" id="starterStrip">${star
 
 /* ---------- Теми и анимации ---------- */
 const theme = () => document.documentElement.dataset.theme || 'warm';
-function setTheme(v) { document.documentElement.dataset.theme = v; try { localStorage.setItem('hlebIvo_theme', v); } catch (e) {} renderHistory(); renderActive(); }
+function setTheme(v) { document.documentElement.dataset.theme = v; setTimeout(nativeChrome, 30); try { localStorage.setItem('hlebIvo_theme', v); } catch (e) {} renderHistory(); renderActive(); }
 function setAnim(on) { document.documentElement.classList.toggle('noanim', !on); try { localStorage.setItem('hlebIvo_anim', on ? '1' : '0'); } catch (e) {} }
 function histTile(e, i) {
   const r = +e.rating, m = metrics(e), ph = photosOf(e), st = ts(e.startDateTime);
@@ -2459,6 +2528,7 @@ try { if (localStorage.getItem('hlebIvo_userName') === null) openModal('nameModa
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
 setInterval(tick, 1000);
 if (LN) nativeSetup(false);
+nativeChrome();
 }
 boot();
 </script>

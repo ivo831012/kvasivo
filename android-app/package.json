@@ -2,7 +2,7 @@
   "name": "samun",
   "version": "1.0.0",
   "private": true,
-  "description": "Самун — дневник за квасен хляб (Android обвивка)",
+  "description": "\u0421\u0430\u043c\u0443\u043d \u2014 \u0434\u043d\u0435\u0432\u043d\u0438\u043a \u0437\u0430 \u043a\u0432\u0430\u0441\u0435\u043d \u0445\u043b\u044f\u0431 (Android \u043e\u0431\u0432\u0438\u0432\u043a\u0430)",
   "dependencies": {
     "@capacitor/android": "^6.2.0",
     "@capacitor/app": "^6.0.2",
@@ -12,7 +12,8 @@
     "@capacitor/local-notifications": "^6.1.2",
     "@capacitor/share": "^6.0.3",
     "@fontsource/unbounded": "^5.0.0",
-    "@fontsource/manrope": "^5.0.0"
+    "@fontsource/manrope": "^5.0.0",
+    "@capacitor/status-bar": "^6.0.0"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5"
