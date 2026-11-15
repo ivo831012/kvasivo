@@ -671,6 +671,14 @@ html.kitchen .nav-btn{font-size:.72rem}
         <button type="button" class="btn-soft" onclick="sendTelegramTest()"><i data-ic="send"></i>Тестово съобщение</button>
         <button type="button" class="btn-soft" onclick="requestNotificationPermission()"><i data-ic="bell"></i>Известия в браузъра</button>
       </div>
+      <div id="nativeBox" style="display:none">
+        <h3 class="sec" style="margin-top:18px"><i data-ic="bell"></i>Известия на телефона</h3>
+        <div class="btn-row" style="margin-top:0">
+          <button type="button" class="btn-soft" onclick="nativeSetup(true)"><i data-ic="bell"></i>Разреши известия</button>
+          <button type="button" class="btn-soft" onclick="nativeTestNotification()"><i data-ic="clock"></i>Тест след 10 сек</button>
+        </div>
+        <p class="muted" style="margin:6px 0 0"><b>За Xiaomi (важно):</b> Настройки → Приложения → Управление на приложения → Самун → <b>Автоматично стартиране</b> (включено) и <b>Икономия на батерията → Без ограничения</b>. После заключи приложението в списъка с последни (дръж картата → катинарче). Така известията идват точно навреме и при затворено приложение.</p>
+      </div>
       <p class="muted" style="margin:0">Токенът се пази само в този браузър. Напомнянията работят, докато приложението е отворено; за сигурност ползвай бутона „Календар“ на хляба.</p>
     </div>
 
@@ -806,6 +814,7 @@ function persist() {
   try { localStorage.setItem(LS_KEY, JSON.stringify(slim)); }
   catch (e) { toast('Паметта на браузъра е пълна. Направи експорт и изчисти стари записи.', {ms: 7000, icon: 'alert', warn: true}); return false; }
   if (idbOk) syncPhotos();
+  if (LN) nativeSync();
   return true;
 }
 function syncPhotos() {
@@ -878,7 +887,7 @@ function showTab(name) {
   if (name === 'diary') renderHistory();
   window.scrollTo(0, 0);
 }
-const APP_VERSION = '3.0.0';
+const APP_VERSION = '3.1.0';
 const userName = () => (localStorage.getItem('hlebIvo_userName') || '').trim();
 function renderGreeting() {
   const h = new Date().getHours(), g = h < 5 ? 'Лека нощ' : h < 11 ? 'Добро утро' : h < 18 ? 'Добър ден' : 'Добър вечер';
@@ -1269,6 +1278,77 @@ async function sendTelegram(text) {
     return r.ok;
   } catch (err) { return false; }
 }
+/* ============ Родна обвивка (Android APK) ============ */
+const CAP = window.Capacitor, NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
+const NP = NATIVE ? (CAP.Plugins || {}) : {};
+const LN = NP.LocalNotifications || null;
+const nid = str => { let h = 7; for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) | 0; return Math.abs(h) % 2000000000 + 1; };
+let nsBusy = false, nsAgain = false, nsSig = '';
+async function nativeSync(force) {
+  if (!LN) return;
+  if (nsBusy) { nsAgain = true; return; }
+  nsBusy = true;
+  try {
+    const now = Date.now(), list = [];
+    breadHistory.forEach(e => {
+      if (e.done || +e.rating > 0) return;
+      eventsOf(e).forEach(ev => { if (ev.t > now + 3000 && ev.t < now + 21 * 86400000) list.push({id: nid(e.id + '|' + ev.key + '|' + ev.t), title: `${ev.icon} ${ev.label}`, body: breadName(e), at: ev.t}); });
+    });
+    const sl = getStarter()[0];
+    if (sl && !sl.peakAt) { const t = sl.t + starterPeakH() * 3600000; if (t > now + 3000) list.push({id: nid('starter|' + sl.id + '|' + t), title: '🫙 Квасът е на върха — време е за замес', body: 'Журнал на кваса', at: t}); }
+    list.sort((a, b) => a.at - b.at); list.length = Math.min(list.length, 200);
+    const sig = JSON.stringify(list.map(x => [x.id, x.at]));
+    if (sig === nsSig && !force) return;
+    const pend = await LN.getPending();
+    if (pend.notifications && pend.notifications.length) await LN.cancel({notifications: pend.notifications.map(n => ({id: n.id}))});
+    if (list.length) await LN.schedule({notifications: list.map(x => ({id: x.id, title: x.title, body: x.body, channelId: 'samun', schedule: {at: new Date(x.at), allowWhileIdle: true}}))});
+    nsSig = sig;
+  } catch (err) { nsSig = ''; }
+  nsBusy = false;
+  if (nsAgain) { nsAgain = false; nativeSync(); }
+}
+async function nativeSetup(ask) {
+  if (!LN) return false;
+  try {
+    await LN.createChannel({id: 'samun', name: 'Стъпки на хляба', description: 'Сгъвания, хладилник, печене и други стъпки', importance: 5, visibility: 1, vibration: true, lights: true});
+    let p = await LN.checkPermissions();
+    if (p.display !== 'granted' && (ask || p.display === 'prompt')) p = await LN.requestPermissions();
+    const ok = p.display === 'granted';
+    if (ask) toast(ok ? 'Известията са разрешени' : 'Известията са забранени — разреши ги от настройките на телефона', {icon: ok ? 'bell' : 'alert', warn: !ok, ms: 6000});
+    if (ok) nativeSync(true);
+    return ok;
+  } catch (err) { if (ask) toast('Известията не се получиха', {icon: 'alert', warn: true}); return false; }
+}
+async function nativeTestNotification() {
+  if (!LN || !(await nativeSetup(false))) { toast('Първо разреши известията', {icon: 'alert', warn: true}); return; }
+  try {
+    await LN.schedule({notifications: [{id: 1999999999, title: '🍞 Самун', body: 'Известията работят! Така ще те викам при всяка стъпка.', channelId: 'samun', schedule: {at: new Date(Date.now() + 10000), allowWhileIdle: true}}]});
+    toast('Затвори приложението — след 10 секунди трябва да получиш известие', {icon: 'bell', ms: 7000});
+  } catch (err) { toast('Не успях да планирам известие', {icon: 'alert', warn: true}); }
+}
+async function nativeSaveFile(name, blob, mime) {
+  const FS = NP.Filesystem, SH = NP.Share; if (!FS || !SH) return false;
+  try {
+    const data = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(blob); });
+    const w = await FS.writeFile({path: name, data, directory: 'CACHE', recursive: true});
+    await SH.share({title: name, url: w.uri, dialogTitle: 'Запази или изпрати'});
+    return true;
+  } catch (err) { return !!(err && /cancel/i.test(String(err.message || err))); }
+}
+if (NATIVE) {
+  document.addEventListener('DOMContentLoaded', () => { const b = document.getElementById('nativeBox'); if (b) b.style.display = ''; });
+  try {
+    const A = NP.App;
+    if (A && A.addListener) A.addListener('backButton', () => {
+      const open = document.querySelectorAll('.modal-overlay.open');
+      if (open.length) { open.forEach(o => o.classList.remove('open')); return; }
+      const cur = document.querySelector('.tab-content.active');
+      if (cur && cur.id !== 'tab-now') { showTab('now'); return; }
+      A.exitApp();
+    });
+  } catch (err) {}
+}
+
 function notify(ev, name, late) {
   const body = name + (late ? ' (наваксано)' : '');
   toast(`${ev.label} · ${body}`, {ms: 9000, icon: ev.ico}); if (ev.key === 'done') confetti();
@@ -1297,6 +1377,7 @@ function checkReminders() {
   if (dirty) { saveFired(fired); renderActive(); if ($('tab-tools').classList.contains('active')) renderStarter(); }
 }
 function requestNotificationPermission() {
+  if (NATIVE) { nativeSetup(true); return; }
   if (!('Notification' in window)) { toast('Този браузър не поддържа известия', {icon: 'alert', warn: true}); return; }
   Notification.requestPermission().then(p => toast(p === 'granted' ? 'Известията са разрешени' : 'Известията не са разрешени', {icon: p === 'granted' ? 'bell' : 'alert'}));
 }
@@ -1577,6 +1658,7 @@ function renderStats() {
 
 /* ============ Календар (.ics) ============ */
 function download(name, text, mime) {
+  if (NATIVE) { nativeSaveFile(name, new Blob([text], {type: mime}), mime); return; }
   const blob = new Blob([text], {type: mime}), url = URL.createObjectURL(blob), a = document.createElement('a');
   a.href = url; a.download = name; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
@@ -1643,7 +1725,7 @@ function tick(skipSig) {
   tickN++;
   if (tickN % 5 === 0) checkReminders();
   if (tickN % 60 === 0) renderGreeting();
-  if (tickN % 30 === 0) { const sp = $('starterStrip'); if (sp && $('tab-now').classList.contains('active')) sp.innerHTML = starterStripInner(); autoArchiveCheck(); if ($('tab-tools').classList.contains('active')) renderStarter(); }
+  if (tickN % 30 === 0) { if (LN) nativeSync(); const sp = $('starterStrip'); if (sp && $('tab-now').classList.contains('active')) sp.innerHTML = starterStripInner(); autoArchiveCheck(); if ($('tab-tools').classList.contains('active')) renderStarter(); }
   if ($('tab-now').classList.contains('active')) {
     const sig = sigActive(breadHistory.filter(isActive).sort((a, b) => (ts(a.startDateTime) || 0) - (ts(b.startDateTime) || 0)));
     if (sig !== lastSig) renderActive();
@@ -1968,6 +2050,7 @@ async function shareBread(id) {
   cv.toBlob(async blob => {
     if (!blob) { toast('Не успях да направя картичката', {icon: 'alert', warn: true}); return; }
     const file = new File([blob], 'Samun_' + (e.name || 'hlyab').replace(/[^\wа-яА-Я-]+/g, '_') + '.png', {type: 'image/png'});
+    if (NATIVE && await nativeSaveFile(file.name, blob, 'image/png')) return;
     try { if (navigator.canShare && navigator.canShare({files: [file]})) { await navigator.share({files: [file], title: breadName(e)}); return; } } catch (x) { if (x && x.name === 'AbortError') return; }
     const url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = file.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
     toast('Картичката е изтеглена', {icon: 'download'});
@@ -2184,6 +2267,7 @@ checkReminders(); autoArchiveCheck();
 try { if (localStorage.getItem('hlebIvo_userName') === null) openModal('nameModal'); } catch (e) {}
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
 setInterval(tick, 1000);
+if (LN) nativeSetup(false);
 }
 boot();
 </script>

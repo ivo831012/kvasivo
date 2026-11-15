@@ -1,0 +1,82 @@
+name: Самун APK
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'manifest.webmanifest'
+      - '*.png'
+      - 'android-app/**'
+      - '.github/workflows/android.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Уеб файлове за приложението
+        working-directory: android-app
+        run: |
+          rm -rf www && mkdir -p www
+          cp ../index.html ../manifest.webmanifest www/
+          cp ../icon-192.png ../icon-512.png ../maskable-512.png ../apple-touch-180.png www/
+
+      - name: Инсталиране на зависимостите
+        working-directory: android-app
+        run: npm install --no-audit --no-fund
+
+      - name: Създаване на Android проекта
+        working-directory: android-app
+        run: npx cap add android
+
+      - name: Права, подпис и версия
+        working-directory: android-app
+        run: node scripts/patch.js
+
+      - name: Иконки
+        working-directory: android-app
+        run: npx capacitor-assets generate --android
+
+      - name: Синхронизиране
+        working-directory: android-app
+        run: npx cap sync android
+
+      - name: Строене на APK
+        working-directory: android-app/android
+        run: ./gradlew assembleRelease --no-daemon
+
+      - name: Подготовка на файла
+        run: |
+          APK=$(find android-app/android/app/build/outputs/apk/release -name '*.apk' | head -n1)
+          test -n "$APK"
+          cp "$APK" Samun.apk
+          ls -la Samun.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Samun-apk
+          path: Samun.apk
+
+      - name: Публикуване (постоянна връзка за теглене)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VER=$(grep -oP "APP_VERSION = '\K[0-9.]+" index.html)
+          gh release delete latest --cleanup-tag -y || true
+          gh release create latest Samun.apk --title "Самун $VER" --notes "Самун $VER — Android приложение. Свали Samun.apk и го инсталирай върху старата версия (данните остават)." --latest

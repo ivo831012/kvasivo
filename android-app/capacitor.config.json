@@ -1,0 +1,10 @@
+{
+  "appId": "bg.anastasov.samun",
+  "appName": "Самун",
+  "webDir": "www",
+  "backgroundColor": "#f7f1e8",
+  "android": { "allowMixedContent": false },
+  "plugins": {
+    "LocalNotifications": { "smallIcon": "ic_stat_samun", "iconColor": "#c8560a" }
+  }
+}
