@@ -1,12 +1,11 @@
 {
-  "name": "Квасиво — дневник за квасен хляб",
-  "short_name": "Квасиво",
-  "description": "Дневник, таймери и инструменти за домашен квасен хляб.",
+  "name": "Самун",
+  "short_name": "Самун",
+  "description": "Дневник за квасен хляб",
   "lang": "bg",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#f7f1e8",
   "theme_color": "#c8560a",
   "icons": [
