@@ -41,6 +41,10 @@ jobs:
         working-directory: android-app
         run: npm install --no-audit --no-fund
 
+      - name: Вграждане на шрифтовете
+        working-directory: android-app
+        run: node scripts/fonts.js
+
       - name: Създаване на Android проекта
         working-directory: android-app
         run: npx cap add android

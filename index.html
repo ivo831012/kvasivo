@@ -16,7 +16,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Lora:ital,wght@0,600;0,700;1,600&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --fd:'Playfair Display',serif; --fb:'Manrope',system-ui,sans-serif;
@@ -390,6 +390,98 @@ html[data-theme=wheat] .card,html[data-theme=wheat] .bread-card{border-radius:24
 html.noanim *,html.noanim *::before,html.noanim *::after{animation:none!important;transition:none!important}
 @media (prefers-reduced-motion:reduce){html:not(.anim-force) *,html:not(.anim-force) *::before,html:not(.anim-force) *::after{animation:none!important;transition:none!important}}
 
+/* ===== v3.2: шрифт като Колба, различни теми, нова „Сега“, по-живи анимации ===== */
+:root,html[data-theme=wheat]{--fd:'Unbounded','Manrope',sans-serif;--fb:'Manrope',system-ui,sans-serif}
+.brand h1{font-size:1.4rem;letter-spacing:-.03em;font-weight:700}
+.card h2{font-size:.98rem;letter-spacing:-.02em}
+.ring-val{font-size:1.02rem;letter-spacing:-.03em}.score b{font-size:1rem}.tile b{font-size:1.35rem}.modal-title{font-size:1rem}.big-res{font-size:1.6rem}
+.bc-title{font-size:.98rem;letter-spacing:-.02em;line-height:1.25}.hero .bc-title{font-size:1rem}.tc-title{font-size:.84rem;letter-spacing:-.02em}
+.sec{letter-spacing:.04em}
+/* преходи между табовете и по-жив вход */
+@keyframes rise2{0%{opacity:0;transform:translateY(26px) scale(.96)}55%{opacity:1}100%{opacity:1;transform:none}}
+.tab-content.active>*{animation:rise2 .6s cubic-bezier(.2,.9,.25,1.12) both}
+.tab-content.active>*:nth-child(2){animation-delay:.08s}.tab-content.active>*:nth-child(3){animation-delay:.16s}.tab-content.active>*:nth-child(4){animation-delay:.24s}.tab-content.active>*:nth-child(5){animation-delay:.32s}
+@keyframes navPop{0%{transform:scale(.6) translateY(6px)}60%{transform:scale(1.25) translateY(-3px)}100%{transform:none}}
+.nav-btn.active:not(.nav-fab) .i{animation:navPop .55s cubic-bezier(.3,1.5,.5,1)}
+.nav-btn.nav-fab{animation:fabBreath 3.4s ease-in-out infinite}
+@keyframes fabBreath{50%{box-shadow:0 14px 30px -8px color-mix(in srgb,var(--primary) 70%,transparent),0 0 0 7px color-mix(in srgb,var(--primary) 10%,transparent)}}
+.logo{animation:logoFloat 5s ease-in-out infinite}
+@keyframes logoFloat{50%{transform:translateY(-3px) rotate(-3deg)}}
+/* героят: живи цветове и свечение */
+.hero{background-size:220% 220%;animation:heroShift 16s ease-in-out infinite}
+@keyframes heroShift{0%,100%{background-position:0% 0%}50%{background-position:100% 100%}}
+.hero::after{animation:glowDrift 8s ease-in-out infinite alternate}
+@keyframes glowDrift{from{transform:translate(0,0) scale(1)}to{transform:translate(-40px,36px) scale(1.35)}}
+.ring .fg{animation:ringGlow 3s ease-in-out infinite}
+@keyframes ringGlow{50%{stroke-width:11.5}}
+.stage-pill .i{animation:wob 2.6s ease-in-out infinite}
+@keyframes wob{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+.next-title .i{animation:wob 3.2s ease-in-out infinite}
+/* атмосфера по етапи: мехурчета · снежинки · жар · искри */
+.amb{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.amb i{position:absolute;display:block;left:var(--x);width:var(--sz);height:var(--sz);animation-delay:var(--dl);animation-duration:var(--d);animation-iteration-count:infinite}
+.amb .bu{bottom:-30px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.4),rgba(255,255,255,.04));animation-name:ambUp;animation-timing-function:ease-in}
+.amb .sn{top:-12px;border-radius:50%;background:#fff;opacity:.85;filter:blur(.3px);animation-name:snowFall;animation-timing-function:linear}
+.amb .em{bottom:-14px;border-radius:50%;background:#ffb347;box-shadow:0 0 10px 3px rgba(255,140,40,.75);animation-name:ambUp;animation-timing-function:ease-out}
+.amb.hot::before{content:'';position:absolute;left:-20%;right:-20%;bottom:-45%;height:75%;background:radial-gradient(ellipse at 50% 100%,rgba(255,130,30,.55),transparent 70%);animation:breathe 2.4s ease-in-out infinite}
+.amb .sp{background:#ffe08a;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);animation-name:twinkle}
+@keyframes ambUp{0%{transform:translate(0,0) scale(.7);opacity:0}12%{opacity:.9}100%{transform:translate(18px,-380px) scale(1.15);opacity:0}}
+@keyframes snowFall{0%{transform:translate(0,0);opacity:0}10%{opacity:.9}50%{transform:translate(16px,200px)}100%{transform:translate(-10px,430px);opacity:0}}
+@keyframes breathe{50%{opacity:.45;transform:scaleY(1.2)}}
+@keyframes twinkle{0%,100%{transform:scale(0) rotate(0);opacity:0}50%{transform:scale(1.3) rotate(90deg);opacity:1}}
+.hero.done{animation:heroShift 16s ease-in-out infinite,doneGlow 2.4s ease-in-out infinite}
+@keyframes doneGlow{50%{box-shadow:0 0 0 6px rgba(240,164,58,.18),0 18px 40px -14px rgba(240,164,58,.6)}}
+
+/* ===== „Пшеница“: друга структура — bento, плоска навигация, тъмни бутони ===== */
+html[data-theme=wheat] .dock{width:calc(100% - 28px);max-width:560px;border-radius:24px;padding:0 6px;height:68px}
+html[data-theme=wheat] .nav-btn{border-radius:16px}
+html[data-theme=wheat] .nav-btn.nav-fab{flex:0 0 54px;width:54px;height:54px;margin-top:0;border-radius:50%;box-shadow:none}
+html[data-theme=wheat] .btn-primary{background:var(--text);color:var(--bg);border-radius:16px;box-shadow:none}
+html[data-theme=wheat] .btn-soft{border-radius:14px}
+html[data-theme=wheat] body{background:var(--bg)}
+html[data-theme=wheat] .brand h1 span{font-style:normal}
+html[data-theme=wheat] .logo{border-radius:50%}
+.bento{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.bento>*{min-width:0}
+.b-hero{grid-column:1/3;background:linear-gradient(150deg,var(--hero-1),var(--hero-2));background-size:220% 220%;animation:heroShift 16s ease-in-out infinite;color:#fff;border-radius:32px;padding:20px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.b-hero>*:not(.amb){position:relative;z-index:1}
+.b-eyebrow{font-size:.66rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;opacity:.88;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.b-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px}
+.b-time{font-family:var(--fd);font-size:2.05rem;font-weight:700;line-height:1;letter-spacing:-.04em;white-space:nowrap}
+.b-time .i{width:44px;height:44px;color:var(--accent)}
+.b-sub{display:flex;gap:8px;align-items:center;margin-top:12px;font-weight:800;font-size:.84rem;line-height:1.25}
+.b-el{font-size:.76rem;opacity:.85;margin-top:6px;font-weight:600}
+.ring.b-ring{width:88px;height:88px;flex-shrink:0}
+.b-ring .bg{stroke:rgba(255,255,255,.22)}.b-ring .fg{stroke:var(--accent)}
+.b-ic{position:absolute;inset:0;display:grid;place-items:center;color:var(--accent)}.b-ic .i{width:28px;height:28px}
+.b-ribbon{grid-column:1/3;background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:6px 10px 2px;box-shadow:var(--shadow)}
+.b-ribbon .stepper{margin:12px 0 8px}
+.b-tile{background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.b-tile.yellow{background:var(--accent);border-color:transparent;color:#3b3208;cursor:pointer}
+.b-tile.yellow .b-lab{color:rgba(59,50,8,.7)}
+.b-note{font-size:.86rem;font-weight:700;line-height:1.35;margin-top:8px}
+.b-span{grid-column:1/3}
+.b-tile.dk{background:linear-gradient(150deg,var(--hero-1),var(--hero-2));color:#fff;border:none;grid-column:1/3;padding:14px}
+.b-tile.dk .foldbox,.b-tile.dk .stepsbox{margin-top:0}
+.b-lab{font-size:.64rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.b-big{font-family:var(--fd);font-size:1.7rem;font-weight:700;margin-top:6px;line-height:1}.b-big small{font-size:.85rem;color:var(--muted)}
+.b-bars{display:flex;gap:5px;margin:12px 0 8px}.b-bars i{flex:1;height:8px;border-radius:4px;background:var(--line)}.b-bars i.on{background:var(--primary);animation:fdPop .45s cubic-bezier(.3,1.6,.5,1) both}
+.b-hint{font-size:.78rem;font-weight:700;color:var(--muted);margin-bottom:10px}
+.b-btn{width:100%;min-height:46px;border:0;border-radius:16px;background:var(--text);color:var(--bg);font:inherit;font-weight:800;cursor:pointer;transition:transform .15s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.b-btn:active{transform:scale(.95)}
+.b-btn.big{min-height:58px;font-size:1.02rem;border-radius:20px;margin:0;animation:btnPulse 2.8s ease-in-out infinite}
+@keyframes btnPulse{50%{box-shadow:0 0 0 7px color-mix(in srgb,var(--text) 10%,transparent)}}
+.b-fold.due{border-color:var(--primary);box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 25%,transparent);animation:pulse 1.8s ease-in-out infinite}
+.b-links{display:flex;justify-content:space-between;margin-top:6px}.b-links button,.b-int button{background:none;border:0;color:var(--muted);font:inherit;font-weight:800;font-size:.76rem;cursor:pointer;padding:8px 4px}
+.b-int{display:flex;align-items:center;justify-content:center;gap:8px;font-size:.72rem;font-weight:800;color:var(--muted)}.b-int button{font-size:1rem;padding:2px 10px;background:var(--chip);border-radius:10px}
+.b-mini{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.b-mini .bi{width:40px;height:40px;border-radius:14px;background:var(--chip);display:grid;place-items:center;color:var(--primary);flex-shrink:0}
+.b-mini b{display:block;font-family:var(--fd);font-size:1rem;line-height:1.1}.b-mini span{font-size:.7rem;color:var(--muted);font-weight:700}
+.b-wide{grid-column:1/3}.b-bake{font-size:.86rem;color:var(--muted);font-weight:700;padding:0 6px}
+.b-main{margin-top:2px}.b-more{margin-top:0}.b-more .btn-soft{flex:1}
+.b-tile{animation:rise2 .6s cubic-bezier(.2,.9,.25,1.12) both}.bento>:nth-child(3){animation-delay:.1s}.bento>:nth-child(4){animation-delay:.18s}.bento>:nth-child(5){animation-delay:.26s}.bento>:nth-child(6){animation-delay:.34s}
+html.noanim .amb,html.noanim .b-hero,html.noanim .hero,html.noanim .logo,html.noanim .nav-fab{animation:none!important}html.noanim .amb{display:none}
+
 /* кухненски режим */
 html.kitchen{font-size:112.5%;--bg:#0b0807;--surface:#1b1410;--surface-2:#251c15;--text:#fff6ea;--muted:#cdb59f;--primary:#ff9a45;--primary-2:#ffb870;--accent:#ffb347;--on-primary:#1f0e03;--line:#3d3024;--chip:#2c2218;--hero-1:#3a2210;--hero-2:#64360f}
 html.kitchen .btn-primary{padding:20px 18px;font-size:1.15rem}
@@ -676,6 +768,7 @@ html.kitchen .nav-btn{font-size:.72rem}
         <div class="btn-row" style="margin-top:0">
           <button type="button" class="btn-soft" onclick="nativeSetup(true)"><i data-ic="bell"></i>Разреши известия</button>
           <button type="button" class="btn-soft" onclick="nativeTestNotification()"><i data-ic="clock"></i>Тест след 10 сек</button>
+          <button type="button" class="btn-soft" onclick="nativeStatus()"><i data-ic="info"></i>Състояние</button>
         </div>
         <p class="muted" style="margin:6px 0 0"><b>За Xiaomi (важно):</b> Настройки → Приложения → Управление на приложения → Самун → <b>Автоматично стартиране</b> (включено) и <b>Икономия на батерията → Без ограничения</b>. После заключи приложението в списъка с последни (дръж картата → катинарче). Така известията идват точно навреме и при затворено приложение.</p>
       </div>
@@ -887,7 +980,7 @@ function showTab(name) {
   if (name === 'diary') renderHistory();
   window.scrollTo(0, 0);
 }
-const APP_VERSION = '3.1.0';
+const APP_VERSION = '3.2.0';
 const userName = () => (localStorage.getItem('hlebIvo_userName') || '').trim();
 function renderGreeting() {
   const h = new Date().getHours(), g = h < 5 ? 'Лека нощ' : h < 11 ? 'Добро утро' : h < 18 ? 'Добър ден' : 'Добър вечер';
@@ -1171,6 +1264,51 @@ function renderActive() {
   if (list.some(e => ts(e.ovenDateTime) && getStage(e, now).i === 2)) keepAwake();
   tick(true);
 }
+/* ============ Атмосфера по етапи + „Пшеница“ bento ============ */
+function ambient(i) {
+  const cls = {0: 'bu', 1: 'sn', 2: 'em', 3: 'sp'}[i]; if (!cls) return '';
+  const n = i === 1 ? 14 : 9;
+  return `<div class="amb ${i === 2 ? 'hot' : ''}">${Array.from({length: n}, (_, k) => {
+    const x = (k * 37 + 11) % 92 + 2, sz = i === 0 ? 8 + (k * 7) % 16 : i === 1 ? 4 + (k * 5) % 7 : i === 2 ? 3 + (k * 3) % 4 : 7 + (k * 5) % 7, d = 6 + (k * 13) % 7, dl = -((k * 17) % 9);
+    return `<i class="${cls}" style="--x:${x}%;--sz:${sz}px;--d:${d}s;--dl:${dl}s;${i === 3 ? `top:${(k * 29) % 80 + 6}%;` : ''}"></i>`;
+  }).join('')}</div>`;
+}
+function bentoCard(c) {
+  const {e, now, stg, m, nx, timer, ringAttr, stepper, main, bakeInfo, from} = c;
+  const btn = (ico, txt, fn) => `<button type="button" class="btn-soft" onclick="${fn}">${ic(ico)}${txt}</button>`;
+  const big = nx ? `<span data-until="${nx.t}"></span>` : stg.i === 3 ? ic('check') : `<span data-since="${from}"></span>`;
+  const sub = nx ? `${ic(nx.ico)}<span>${esc(nx.label)} · ${esc(fmtT(nx.t))}</span>` : `${ic(stg.ico)}<span>${esc(stg.label)}</span>`;
+  let fold = '';
+  if (stg.i === 0 && foldTarget(e)) {
+    const n = foldTarget(e), log = foldLog(e), nf = nextFold(e, now), iv = foldInt(e), due = nf && nf.t <= now;
+    const bars = Array.from({length: Math.max(n, log.length)}, (_, i) => `<i class="${i < log.length ? 'on' : ''}"></i>`).join('');
+    const st = !nf ? 'Всички са готови' : due ? '<b class="due-txt">Време е!</b>' : `след <b data-until="${nf.t}"></b>`;
+    fold = `<div class="b-tile b-fold ${due ? 'due' : ''}"><div class="b-lab">Сгъвания</div><div class="b-big">${log.length}<small> / ${n}</small></div><div class="b-bars">${bars}</div>
+      <div class="b-hint">${st}</div>
+      ${nf ? `<button type="button" class="b-btn" onclick="logFold('${e.id}')">Сгънах</button><div class="b-links"><button type="button" onclick="snoozeFold('${e.id}',10)">+10 мин</button>${log.length ? `<button type="button" onclick="undoFold('${e.id}')">Отмени</button>` : ''}</div>` : `<button type="button" class="b-btn" onclick="extraFold('${e.id}')">Още едно</button>`}
+      <div class="b-int"><button type="button" onclick="adjFoldInt('${e.id}',-5)" aria-label="По-често">−</button><span>на ${iv} мин</span><button type="button" onclick="adjFoldInt('${e.id}',5)" aria-label="По-рядко">+</button></div></div>`;
+  }
+  const ss = starterState();
+  const sTile = `<div class="b-tile yellow ${fold ? '' : 'b-span'}" onclick="showTab('tools')"><div class="b-lab">Закваска</div><div class="b-note">${ss ? ss.txt : '<b>Журнал на закваската</b><br>Запиши хранене и ще те известя кога е на върха'}</div></div>`;
+  const mini = (ico, val, lab) => `<div class="b-tile b-mini"><div class="bi">${ic(ico)}</div><div><b>${val}</b><span>${lab}</span></div></div>`;
+  const minis = [m.hydr != null ? mini('droplet', pct(m.hydr), 'хидратация') : '', m.starterPct != null ? mini('jar', pct(m.starterPct), 'квас') : '', e.roomTemp ? mini('thermo', esc(e.roomTemp) + '°', 'в кухнята') : (m.saltPct != null ? mini('salt', pct(m.saltPct), 'сол') : '')].filter(Boolean).slice(0, 2).join('');
+  return `<div class="bento">
+    <div class="b-hero ${stg.i === 3 ? 'done' : ''}">${ambient(stg.i)}
+      <div class="b-eyebrow">${esc(breadName(e))} · ${esc(stg.label)}</div>
+      <div class="b-row"><div style="min-width:0"><div class="b-time ring-val">${big}</div><div class="b-sub">${sub}</div>${timer ? `<div class="b-el">${timer}</div>` : ''}</div>
+        <div class="ring b-ring"><svg viewBox="0 0 120 120"><circle class="bg" cx="60" cy="60" r="52"/><circle class="fg" cx="60" cy="60" r="52" ${ringAttr}/></svg><div class="b-ic">${ic(stg.ico)}</div></div></div>
+    </div>
+    <div class="b-ribbon"><div class="stepper">${stepper}</div></div>
+    ${fold}${sTile}${minis}
+    ${(stg.i === 0 || stg.i === 1) && (e.steps || []).length ? `<div class="b-tile b-wide dk">${stepsPanel(e, now)}</div>` : ''}
+    ${stg.i === 0 ? `<div class="b-tile b-wide dk">${readyPanel(e, 'f')}</div>` : ''}
+    ${(stg.i === 1 || (stg.i === 2 && !ov(e))) ? `<div class="b-tile b-wide dk">${readyPanel(e, 'b')}</div>` : ''}
+    ${bakeInfo ? `<div class="b-wide b-bake">${bakeInfo}</div>` : ''}
+    ${main ? `<div class="b-wide b-main">${main.replace('btn-primary', 'b-btn big')}</div>` : ''}
+    <div class="b-wide btn-row b-more">${stg.i === 0 ? btn('flame', 'Без хладилник → печене', `quick('${e.id}','skip')`) : ''}${btn('edit', 'Редакция', `openEdit('${e.id}')`)}${btn('calendar', 'Календар', `exportICS('${e.id}')`)}${btn('eyeoff', 'Скрий', `hideActive('${e.id}')`)}</div>
+  </div>`;
+}
+const ov = e => ts(e.ovenDateTime);
 function activeCard(e, now) {
   const stg = getStage(e, now), m = metrics(e), nf = nextFold(e, now);
   let nx = nextEvent(e, now);
@@ -1209,8 +1347,9 @@ function activeCard(e, now) {
     : `<div class="eyebrow">Статус</div><div class="next-title">${ic(stg.ico)}<span>${esc(stg.label)}</span></div>${timer ? `<div class="elapsed">${timer}</div>` : ''}`;
   const bakeInfo = ov ? `<div class="muted" style="margin-top:12px;display:flex;gap:8px;align-items:center">${ic('lid')}${esc(bakeSummary(e))}</div>` : '';
 
+  if (theme() === 'wheat') return bentoCard({e, now, stg, m, nx, timer, ringAttr, stepper, main, bakeInfo, from});
   return `<div class="card hero ${stg.i === 3 ? 'done' : ''}">
-    ${stg.i === 0 ? '<i class="bub b1"></i><i class="bub b2"></i><i class="bub b3"></i><i class="bub b4"></i>' : ''}
+    ${ambient(stg.i)}
     <div class="hero-top">
       <div style="min-width:0"><div class="bc-title">${esc(breadName(e))}</div><div class="bc-sub">${ic('calendar')}Замес: ${esc(fmtDT(st))}</div></div>
       <span class="stage-pill">${ic(stg.ico)}${esc(stg.label)}</span>
@@ -1281,9 +1420,10 @@ async function sendTelegram(text) {
 /* ============ Родна обвивка (Android APK) ============ */
 const CAP = window.Capacitor, NATIVE = !!(CAP && CAP.isNativePlatform && CAP.isNativePlatform());
 const NP = NATIVE ? (CAP.Plugins || {}) : {};
-const LN = NP.LocalNotifications || null;
+const plug = n => { try { return NP[n] || (CAP.registerPlugin ? CAP.registerPlugin(n) : null); } catch (err) { return null; } };
+const LN = NATIVE ? plug('LocalNotifications') : null;
 const nid = str => { let h = 7; for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) | 0; return Math.abs(h) % 2000000000 + 1; };
-let nsBusy = false, nsAgain = false, nsSig = '';
+let nsBusy = false, nsAgain = false, nsSig = '', nsErr = '';
 async function nativeSync(force) {
   if (!LN) return;
   if (nsBusy) { nsAgain = true; return; }
@@ -1298,12 +1438,12 @@ async function nativeSync(force) {
     if (sl && !sl.peakAt) { const t = sl.t + starterPeakH() * 3600000; if (t > now + 3000) list.push({id: nid('starter|' + sl.id + '|' + t), title: '🫙 Квасът е на върха — време е за замес', body: 'Журнал на кваса', at: t}); }
     list.sort((a, b) => a.at - b.at); list.length = Math.min(list.length, 200);
     const sig = JSON.stringify(list.map(x => [x.id, x.at]));
-    if (sig === nsSig && !force) return;
+    if (sig === nsSig && !force) { nsBusy = false; return; }
     const pend = await LN.getPending();
     if (pend.notifications && pend.notifications.length) await LN.cancel({notifications: pend.notifications.map(n => ({id: n.id}))});
     if (list.length) await LN.schedule({notifications: list.map(x => ({id: x.id, title: x.title, body: x.body, channelId: 'samun', schedule: {at: new Date(x.at), allowWhileIdle: true}}))});
     nsSig = sig;
-  } catch (err) { nsSig = ''; }
+  } catch (err) { nsSig = ''; nsErr = String(err && err.message || err); }
   nsBusy = false;
   if (nsAgain) { nsAgain = false; nativeSync(); }
 }
@@ -1319,6 +1459,14 @@ async function nativeSetup(ask) {
     return ok;
   } catch (err) { if (ask) toast('Известията не се получиха', {icon: 'alert', warn: true}); return false; }
 }
+async function nativeStatus() {
+  if (!LN) { toast('Родните известия не са налични (отворено в браузър?)', {icon: 'alert', warn: true, ms: 6000}); return; }
+  try {
+    const p = await LN.checkPermissions(), pend = await LN.getPending(); let ex = '?';
+    try { ex = (await LN.checkExactNotificationSetting()).exact_alarm; } catch (x) {}
+    toast(`Разрешение: ${p.display} · точен будилник: ${ex} · планирани: ${(pend.notifications || []).length}${nsErr ? ' · грешка: ' + nsErr : ''}`, {icon: 'bell', ms: 10000});
+  } catch (err) { toast('Грешка: ' + (err && err.message || err), {icon: 'alert', warn: true, ms: 8000}); }
+}
 async function nativeTestNotification() {
   if (!LN || !(await nativeSetup(false))) { toast('Първо разреши известията', {icon: 'alert', warn: true}); return; }
   try {
@@ -1327,7 +1475,7 @@ async function nativeTestNotification() {
   } catch (err) { toast('Не успях да планирам известие', {icon: 'alert', warn: true}); }
 }
 async function nativeSaveFile(name, blob, mime) {
-  const FS = NP.Filesystem, SH = NP.Share; if (!FS || !SH) return false;
+  const FS = plug('Filesystem'), SH = plug('Share'); if (!FS || !SH) return false;
   try {
     const data = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(blob); });
     const w = await FS.writeFile({path: name, data, directory: 'CACHE', recursive: true});
@@ -1338,7 +1486,7 @@ async function nativeSaveFile(name, blob, mime) {
 if (NATIVE) {
   document.addEventListener('DOMContentLoaded', () => { const b = document.getElementById('nativeBox'); if (b) b.style.display = ''; });
   try {
-    const A = NP.App;
+    const A = plug('App');
     if (A && A.addListener) A.addListener('backButton', () => {
       const open = document.querySelectorAll('.modal-overlay.open');
       if (open.length) { open.forEach(o => o.classList.remove('open')); return; }
@@ -2231,7 +2379,7 @@ const starterStripHtml = () => `<div class="card strip" id="starterStrip">${star
 
 /* ---------- Теми и анимации ---------- */
 const theme = () => document.documentElement.dataset.theme || 'warm';
-function setTheme(v) { document.documentElement.dataset.theme = v; try { localStorage.setItem('hlebIvo_theme', v); } catch (e) {} renderHistory(); }
+function setTheme(v) { document.documentElement.dataset.theme = v; try { localStorage.setItem('hlebIvo_theme', v); } catch (e) {} renderHistory(); renderActive(); }
 function setAnim(on) { document.documentElement.classList.toggle('noanim', !on); try { localStorage.setItem('hlebIvo_anim', on ? '1' : '0'); } catch (e) {} }
 function histTile(e, i) {
   const r = +e.rating, m = metrics(e), ph = photosOf(e), st = ts(e.startDateTime);
